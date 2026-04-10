@@ -57,8 +57,8 @@ Configuración del custom pattern:
 |---|---|
 | Pattern name | `MYCO Internal API Key` |
 | Secret format | `MYCO-[A-Z]{3}-\d{4}-[a-f0-9]{8}` |
-| Before secret | `(api[_\-]?key\|token\|secret\|key)\s*[:=]\s*["'\`]?` |
-| After secret | `["'\`]?` |
+| Before secret | `(api[_\-]?key\|token\|secret\|key)\s*[:=]\s*["']?` |
+| After secret | `["']?` |
 
 ---
 
@@ -75,8 +75,8 @@ Configuración del custom pattern:
 |---|---|
 | Pattern name | `Internal Database Access Token` |
 | Secret format | `DB-TOKEN-\d{8}-[A-Za-z0-9]{16}` |
-| Before secret | `(db[_\-]?token\|database[_\-]?token)\s*[:=]\s*["'\`]?` |
-| After secret | `["'\`]?` |
+| Before secret | `(db[_\-]?token\|database[_\-]?token)\s*[:=]\s*["']?` |
+| After secret | `["']?` |
 
 ---
 
@@ -109,8 +109,8 @@ Configuración del custom pattern:
 |---|---|
 | Pattern name | `Internal Webhook Secret` |
 | Secret format | `whsec_[A-Za-z0-9]{40}` |
-| Before secret | `(webhook[_\-]?secret\|wh[_\-]?secret)\s*[:=]\s*["'\`]?` |
-| After secret | `["'\`]?` |
+| Before secret | `(webhook[_\-]?secret\|wh[_\-]?secret)\s*[:=]\s*["']?` |
+| After secret | `["']?` |
 
 ---
 
