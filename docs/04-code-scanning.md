@@ -109,7 +109,7 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 
 ### Opciones para agregar queries adicionales
 
-> **📌 Concepto clave (GH-500):** Al configurar Code Scanning con CodeQL, hay **dos formas** de especificar queries adicionales en el workflow:
+> **📌 Concepto clave:** Al configurar Code Scanning con CodeQL, hay **dos formas** de especificar queries adicionales en el workflow:
 >
 > | Opción | Parámetro | Descripción |
 > |---|---|---|
@@ -350,6 +350,98 @@ public UserData? DeserializeUserData(string json)
 Tool: CodeQL
 Severity: High, Critical
 Rule: sql-injection, path-injection, ssrf
+```
+
+---
+
+## Paso 4b — SARIF: el formato estándar de resultados
+
+### ¿Qué es SARIF?
+
+**SARIF** (Static Analysis Results Interchange Format) es un estándar JSON abierto (OASIS) diseñado para representar los resultados de herramientas de análisis estático de código. GitHub lo adoptó como el formato universal para Code Scanning — cualquier herramienta que genere un archivo `.sarif` puede publicar sus alertas en Security → Code scanning.
+
+```
+Herramienta de análisis          GitHub Code Scanning
+(CodeQL, Semgrep, Snyk...)  →   Security → Code scanning alerts
+        genera .sarif                  muestra alertas
+```
+
+### CodeQL vs herramientas SARIF de terceros
+
+> **📌 Concepto clave (GH-500 Q37):** Cuando usas una herramienta **SARIF-compatible de tercero** (no CodeQL) en GitHub Actions, **debes agregar manualmente un paso final** que suba el archivo `.sarif` a GitHub con `github/codeql-action/upload-sarif`. Sin ese paso, el archivo se genera en el runner pero GitHub nunca recibe los resultados.
+>
+> En contraste, `github/codeql-action/analyze` (usado por CodeQL) **sube automáticamente** — el upload está integrado en la acción.
+
+| Escenario | Upload automático | Paso manual requerido |
+|---|---|---|
+| `github/codeql-action/analyze` (CodeQL nativo) | ✅ Sí — integrado en la acción | No |
+| Herramienta SARIF de tercero (Semgrep, Snyk, etc.) | ❌ No | ✅ Sí — `upload-sarif` |
+
+### Ejemplo: herramienta SARIF de tercero
+
+```yaml
+jobs:
+  semgrep-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write   # requerido para subir resultados
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep          # la herramienta genera el archivo .sarif
+        run: |
+          pip install semgrep
+          semgrep --sarif --output results.sarif .
+
+      - name: Upload SARIF to GitHub   # ← PASO OBLIGATORIO para terceros
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+        # Sin este paso, las alertas NO aparecen en Security → Code scanning
+```
+
+### Estructura básica de un archivo SARIF
+
+```json
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Semgrep",
+          "rules": [...]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "csharp.sql-injection",
+          "message": { "text": "SQL Injection detected" },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/UsersApi/Services/AuthService.cs" },
+                "region": { "startLine": 42 }
+              }
+            }
+          ],
+          "level": "error"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Permiso requerido
+
+Para subir resultados SARIF, el workflow necesita el permiso `security-events: write` — tanto para CodeQL como para herramientas de terceros:
+
+```yaml
+permissions:
+  security-events: write
+  contents: read
 ```
 
 ---
