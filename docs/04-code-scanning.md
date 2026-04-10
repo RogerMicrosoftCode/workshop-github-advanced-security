@@ -29,7 +29,17 @@ Este enfoque se llama **taint analysis** y es superior a los linters tradicional
 
 ## Paso 1 — El workflow de CodeQL
 
-Abre `.github/workflows/codeql.yml`. El archivo define dos jobs:
+### Nombre del archivo: `codeql-analysis.yml`
+
+Cuando habilitas Code Scanning con **Advanced Setup** desde la UI de GitHub
+(Settings → Code Security → Code scanning → Advanced), GitHub genera automáticamente
+un archivo llamado exactamente `codeql-analysis.yml` en `.github/workflows/`.
+
+Este nombre es el estándar del Advanced Setup — a diferencia del Default Setup
+(que no genera archivo de workflow visible), el Advanced Setup te entrega el YAML
+completo para que lo personalices.
+
+Abre `.github/workflows/codeql-analysis.yml`. El archivo define dos jobs:
 
 ### Job 1: `analyze-autobuild`
 
@@ -281,14 +291,14 @@ Rule: sql-injection, path-injection, ssrf
 
 ## Paso 5 — Importancia del workflow file en la rama
 
-Para que Code Scanning se ejecute en una rama, el archivo `codeql.yml` **debe existir en esa rama**. Si la rama no lo contiene, GitHub Actions no ejecutará el análisis aunque Code Scanning esté habilitado en el repositorio.
+Para que Code Scanning se ejecute en una rama, el archivo `codeql-analysis.yml` **debe existir en esa rama**. Si la rama no lo contiene, GitHub Actions no ejecutará el análisis aunque Code Scanning esté habilitado en el repositorio.
 
 **Demostración:**
 
 ```bash
 # Crea un branch SIN el workflow
 git checkout -b demo/sin-codeql
-git rm .github/workflows/codeql.yml
+git rm .github/workflows/codeql-analysis.yml
 git commit -m "demo: branch without CodeQL workflow"
 git push origin demo/sin-codeql
 ```

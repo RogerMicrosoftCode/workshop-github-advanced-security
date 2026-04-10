@@ -1,5 +1,5 @@
 # ──────────────────────────────────────────────────────────────────────────────
-# codeql.yml — Workflow de Code Scanning con CodeQL
+# codeql-analysis.yml — Workflow de Code Scanning con CodeQL
 #
 # Este workflow demuestra las dos formas de compilar código en un análisis
 # CodeQL para lenguajes compilados (C#, Java, C/C++, Swift):

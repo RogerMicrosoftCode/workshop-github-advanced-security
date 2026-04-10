@@ -41,7 +41,7 @@ ghas/
 ├── .github/
 │   ├── dependabot.yml          # Monitoreo de NuGet y GitHub Actions
 │   └── workflows/
-│       ├── codeql.yml          # Code Scanning (2 jobs)
+│       ├── codeql-analysis.yml  # Code Scanning (2 jobs)
 │       └── dependency-review.yml  # Dependency Review en PRs
 ├── docs/
 │   ├── 01-setup.md             # Prerequisitos y configuración
@@ -175,7 +175,7 @@ POST   /api/reports/deserialize# Deserializar JSON (Insecure Deserialization dem
 | Dependabot security updates | Activo | Automático |
 | Secret Scanning | Activo | Habilitado en Settings |
 | Push Protection | Activo | Habilitado en Settings |
-| Code Scanning | Activo | `.github/workflows/codeql.yml` |
+| Code Scanning | Activo | `.github/workflows/codeql-analysis.yml` |
 | Dependency Review | Activo | `.github/workflows/dependency-review.yml` |
 | Custom Patterns | Manual | Ver `docs/custom-patterns.md` |
 
