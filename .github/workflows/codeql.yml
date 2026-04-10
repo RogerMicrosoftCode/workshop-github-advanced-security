@@ -1,0 +1,158 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# codeql.yml — Workflow de Code Scanning con CodeQL
+#
+# Este workflow demuestra las dos formas de compilar código en un análisis
+# CodeQL para lenguajes compilados (C#, Java, C/C++, Swift):
+#
+#   JOB 1 — autobuild:
+#     CodeQL intenta detectar y ejecutar el proceso de compilación
+#     automáticamente. Funciona bien en proyectos estándar con una
+#     solución (.sln) o proyecto (.csproj) en la raíz.
+#
+#   JOB 2 — custom-build:
+#     Se especifican los comandos de compilación explícitamente.
+#     Necesario cuando el proyecto usa pasos no estándar:
+#       • Múltiples proyectos en subdirectorios
+#       • Generación de código previo al build (proto, swagger, etc.)
+#       • Parámetros especiales del compilador
+#       • Configuraciones de build personalizadas
+#
+# Ambos jobs producen el mismo resultado (alertas en Security > Code scanning),
+# pero custom-build ofrece más control sobre qué se compila y cómo.
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: "CodeQL — Code Scanning"
+
+on:
+  # Trigger 1 — Push a ramas principales
+  # El escaneo se ejecuta cada vez que se hace push a estas ramas.
+  # IMPORTANTE: este archivo debe existir en la rama del push para que
+  # el job se ejecute. Si la rama no contiene este workflow, GitHub Actions
+  # no lanzará el análisis aunque Code Scanning esté habilitado en el repo.
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+
+  # Trigger 2 — Pull Requests hacia ramas principales
+  # CodeQL analiza el código del branch de origen del PR (no el destino).
+  # Si el branch de origen no tiene este archivo, el check no aparece en el PR.
+  # Esto garantiza que todo código revisado en PR haya sido analizado antes de merge.
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  # Trigger 3 — Escaneo periódico programado
+  # Detecta vulnerabilidades en código que no ha cambiado pero cuyas reglas
+  # de CodeQL sí se actualizaron. Útil para mantenerse al día con nuevas queries
+  # publicadas por el equipo de seguridad de GitHub.
+  schedule:
+    - cron: "0 8 * * 1"   # Todos los lunes a las 08:00 UTC
+
+  # Trigger 4 — Ejecución manual desde la pestaña Actions de GitHub
+  # Permite lanzar el análisis on-demand sin necesidad de hacer un push.
+  # Útil para validar cambios en la configuración del workflow.
+  workflow_dispatch:
+
+jobs:
+
+  # ── JOB 1: Autobuild ────────────────────────────────────────────────────────
+  # CodeQL inspecciona el repositorio e intenta compilar automáticamente.
+  # Estrategia: detecta el sistema de build predominante (MSBuild, dotnet, Maven,
+  # Gradle, make, etc.) y ejecuta el comando más probable.
+  #
+  # Ventaja:  sin configuración extra, funciona out-of-the-box.
+  # Limitación: puede fallar si la estructura del proyecto no es estándar
+  #             o si requiere variables de entorno / herramientas adicionales.
+  analyze-autobuild:
+    name: Analyze with autobuild
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Init descarga las queries de CodeQL y crea la base de datos vacía.
+      # A partir de aquí CodeQL monitorea todos los procesos de compilación
+      # para construir el grafo de llamadas y flujo de datos.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-extended
+
+      # autobuild ejecuta el build sin intervención manual.
+      # Para .NET detecta el .sln o .csproj y ejecuta: dotnet build
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      # analyze sube los resultados en formato SARIF a GitHub.
+      # Las alertas se ven en: Security → Code scanning alerts
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp/build:autobuild"
+
+  # ── JOB 2: Custom Build Steps ───────────────────────────────────────────────
+  # Los pasos de compilación se definen explícitamente en el workflow.
+  # Útil para proyectos en subdirectorios, multi-proyecto, o que requieren
+  # configuración previa (variables de entorno, herramientas adicionales, etc.)
+  #
+  # Ventaja:  control total sobre qué se compila, en qué orden y con qué flags.
+  # Uso típico: monorepos, microservicios, proyectos con generación de código.
+  analyze-custom-build:
+    name: Analyze with custom build
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Instalar la versión exacta del SDK requerida por el proyecto.
+      # Con autobuild esto no es posible — usa la versión que ya está en el runner.
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.x"
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-extended
+
+      # Custom build steps: comandos explícitos en lugar de autobuild.
+      # CodeQL monitorea estos comandos para trazar el flujo de datos.
+      #
+      # Paso 1: restaurar dependencias NuGet
+      - name: Restore NuGet packages
+        run: dotnet restore src/UsersApi/UsersApi.csproj
+
+      # Paso 2: compilar en modo Release (más cercano a producción)
+      # --no-restore evita doble restauración; /p:UseSharedCompilation=false
+      # desactiva el servidor de compilación compartido de Roslyn para que
+      # CodeQL pueda interceptar correctamente todos los procesos del compilador.
+      - name: Build
+        run: |
+          dotnet build src/UsersApi/UsersApi.csproj \
+            --configuration Release \
+            --no-restore \
+            /p:UseSharedCompilation=false
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp/build:custom"
+

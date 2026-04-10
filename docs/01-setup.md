@@ -81,7 +81,7 @@ workshop-github-advanced-security/
 ├── .github/
 │   ├── dependabot.yml              # Lab 02 — Dependabot
 │   └── workflows/
-│       ├── codeql-analysis.yml     # Lab 04 — Code Scanning
+│       ├── codeql.yml              # Lab 04 — Code Scanning
 │       └── dependency-review.yml   # Lab 05 — Dependency Review
 ├── docs/
 │   ├── 01-setup.md                 # Este archivo

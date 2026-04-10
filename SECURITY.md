@@ -74,7 +74,7 @@ The following are **intentional** and should not be reported:
 
 | Feature | Status |
 |---|---|
-| Code Scanning (CodeQL) | ✅ Configured via `.github/workflows/codeql-analysis.yml` |
+| Code Scanning (CodeQL) | ✅ Configured via `.github/workflows/codeql.yml` |
 | Secret Scanning | ✅ Enable in Settings → Security |
 | Push Protection | ✅ Recommended — enable in Settings → Security |
 | Dependabot Alerts | ✅ Configured via `.github/dependabot.yml` |
