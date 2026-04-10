@@ -96,7 +96,9 @@ updates:
 
 ### Conceptos clave de la configuración
 
-**`package-ecosystem: nuget`**
+> **📌 Concepto clave (GH-500):** En `dependabot.yml`, la clave **`package-ecosystem`** es **obligatoria** en cada entrada de `updates`. Sin ella, Dependabot no puede determinar qué gestor de paquetes usar ni cómo analizar las dependencias. En cambio, claves como `rebase-strategy`, `commit-message` o `groups` son **opcionales** y solo personalizan el comportamiento.
+
+**`package-ecosystem: nuget`** *(obligatoria)*
 Indica que Dependabot debe analizar el archivo `.csproj` buscando paquetes NuGet.
 Otros valores posibles: `npm`, `pip`, `maven`, `gradle`, `bundler`, `github-actions`.
 
