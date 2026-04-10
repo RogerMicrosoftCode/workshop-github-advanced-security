@@ -41,7 +41,7 @@ completo para que lo personalices.
 
 Abre `.github/workflows/codeql.yml`. El archivo define dos jobs:
 
-> **📌 Concepto clave (GH-500):** Para lenguajes compilados (C#, Java, C/C++, Go, Swift), CodeQL realiza la extracción **monitoreando el proceso de build**. Observa los comandos de compilación (`make`, `javac`, `dotnet build`) y extrae los datos relevantes de cada paso ejecutado. Con esta información construye una **base de datos semántica** del código.
+> **📌 Concepto clave:** Para lenguajes compilados (C#, Java, C/C++, Go, Swift), CodeQL realiza la extracción **monitoreando el proceso de build**. Observa los comandos de compilación (`make`, `javac`, `dotnet build`) y extrae los datos relevantes de cada paso ejecutado. Con esta información construye una **base de datos semántica** del código.
 >
 > Este enfoque garantiza que CodeQL capture una representación precisa y real del código tal como se compila, incluyendo configuraciones específicas de plataforma o lógica condicional usada durante el build.
 
@@ -95,6 +95,43 @@ queries: security-extended
 | `security-and-quality` | Seguridad + problemas de calidad de código | Alto |
 
 Para este workshop se usa `security-extended` para maximizar las alertas detectadas.
+
+### Extensiones de archivo en CodeQL
+
+> **📌 Concepto clave (GH-500 Q34):** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub — no es necesario escribir la ruta completa.
+>
+> | Extensión | Tipo | Descripción |
+> |---|---|---|
+> | `.qls` | **Query suite** | Define una colección de queries (YAML). Los nombres cortos `default`, `security-extended` son aliases de archivos `.qls` internos |
+> | `.ql` | **Query individual** | Una sola consulta CodeQL — detecta un tipo de vulnerabilidad específico |
+> | `.qll` | **Librería** | Código reutilizable importado por archivos `.ql` |
+> | `.yml` | **Workflow** | Configura GitHub Actions — no tiene relación con query suites |
+
+**Ejemplo de custom query suite** (`.qls`) para ejecutar solo las queries de SQL Injection y Path Traversal del pack de C#:
+
+```yaml
+# my-custom-suite.qls
+- queries: .
+  from: codeql/csharp-queries
+- include:
+    tags contain:
+      - security
+      - correctness
+- exclude:
+    tags contain: experimental
+- exclude:
+    id:
+      - cs/web/unvalidated-url-redirection  # excluir query específica
+```
+
+Para usarlo en el workflow:
+
+```yaml
+- name: Perform CodeQL Analysis
+  uses: github/codeql-action/analyze@v3
+  with:
+    queries: ./.github/codeql/my-custom-suite.qls  # ruta al .qls propio
+```
 
 ---
 
