@@ -1,0 +1,99 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# codeql.yml — Workflow de Code Scanning con CodeQL
+#
+# CONCEPTO CLAVE (pregunta de certificación GHAS):
+#   Para que Code Scanning se ejecute en una rama específica, este archivo
+#   DEBE existir en esa rama dentro de .github/workflows/.
+#
+#   Si haces un push a la rama "feature/nueva-funcionalidad" pero ese branch
+#   no tiene este archivo, GitHub Actions NO ejecutará el escaneo en esa rama,
+#   aunque esté habilitado en el repositorio.
+#
+#
+# ¿Cómo demostrarlo en la demo?
+#   1. Sube este repo a GitHub con este archivo en la rama "main"  → escaneo ✅
+#   2. Crea una rama "sin-workflow" y elimina este archivo         → sin escaneo ❌
+#   3. Abre un PR de "sin-workflow" a "main"                       → el check de
+#      CodeQL no aparece porque la rama origen no tiene el workflow
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: "CodeQL — Code Scanning"
+
+on:
+  # Disparador 1: en cada push a las ramas principales
+  # El escaneo SOLO se ejecuta si este archivo existe en la rama del push.
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+
+  # Disparador 2: en Pull Requests hacia las ramas principales
+  # CodeQL analiza el código del branch de origen del PR.
+  # Si el branch de origen NO tiene este archivo → el job no se ejecuta.
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  # Disparador 3: escaneo periódico programado
+  # Útil para detectar nuevas vulnerabilidades en código que no ha cambiado
+  # pero cuyas reglas de CodeQL sí se actualizaron.
+  schedule:
+    - cron: "0 8 * * 1"   # Todos los lunes a las 08:00 UTC
+
+  # Disparador 4: ejecución manual desde la pestaña Actions de GitHub
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Requerido para que CodeQL suba los resultados al repositorio
+      security-events: write
+      # Requerido para leer el código del repositorio
+      contents: read
+      # Requerido para leer los metadatos de Actions
+      actions: read
+
+    strategy:
+      fail-fast: false   # Si un lenguaje falla, los otros continúan
+      matrix:
+        # Lista de lenguajes a analizar.
+        # CodeQL soporta: c-cpp, csharp, go, java-kotlin, javascript-typescript, python, ruby, swift
+        language:
+          - csharp        # Analiza el proyecto .NET de esta demo
+
+    steps:
+      # Paso 1: clonar el repositorio en el runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Paso 2: inicializar CodeQL
+      # Descarga las queries y prepara el entorno de análisis para el lenguaje.
+      # La "suite" extended incluye más queries que la suite "default",
+      # detectando más vulnerabilidades a costa de más falsos positivos.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended   # Opciones: default | security-extended | security-and-quality
+
+      # Paso 3: compilar el proyecto
+      # Para C#, CodeQL necesita observar la compilación para construir el grafo
+      # de flujo de datos (taint tracking) que detecta SQL Injection, SSRF, etc.
+      # "autobuild" intenta compilar automáticamente; para proyectos complejos
+      # puedes reemplazarlo por comandos explícitos de dotnet build.
+      - name: Build (autobuild)
+        uses: github/codeql-action/autobuild@v3
+
+      # Paso 4: ejecutar el análisis y subir resultados
+      # Los resultados aparecen en Security > Code scanning alerts del repo.
+      # El formato SARIF (Static Analysis Results Interchange Format) es el
+      # estándar que GitHub usa para mostrar las alertas de Code Scanning.
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

@@ -1,0 +1,94 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# dependabot.yml — Configuración de Dependabot para GitHub Advanced Security
+#
+# ¿Qué es Dependabot?
+#   Dependabot es un servicio de GitHub que analiza las dependencias de tu
+#   proyecto y abre Pull Requests automáticos cuando detecta:
+#     • Versiones desactualizadas de paquetes
+#     • Vulnerabilidades conocidas (CVE) en las dependencias
+#
+# ¿Cómo funciona con GHAS?
+#   GitHub Advanced Security amplía las capacidades de Dependabot con:
+#     • Dependabot Alerts  → notificaciones de CVEs en tus dependencias
+#     • Dependabot Security Updates → PRs automáticos para parchear CVEs
+#     • Dependabot Version Updates → PRs para mantener dependencias al día
+#
+# Este archivo se debe colocar en: .github/dependabot.yml
+# ──────────────────────────────────────────────────────────────────────────────
+
+version: 2  # Versión del esquema de configuración de Dependabot (siempre "2")
+
+updates:
+
+  # ── .NET / NuGet ─────────────────────────────────────────────────────────────
+  - package-ecosystem: "nuget"   # Ecosistema: NuGet (paquetes .NET)
+    directory: "/src/UsersApi"   # Directorio donde está el .csproj
+    schedule:
+      interval: "weekly"         # Frecuencia de revisión: daily | weekly | monthly
+      day: "monday"              # Día de la semana en que se revisa (solo para weekly)
+      time: "09:00"              # Hora UTC en que se ejecuta la revisión
+      timezone: "America/Mexico_City"
+
+    # Límite de PRs abiertos simultáneamente para evitar saturar el equipo.
+    # Dependabot no abrirá más de este número de PRs a la vez.
+    open-pull-requests-limit: 5
+
+    # A quién asignar los PRs que abra Dependabot
+    assignees:
+      - "admin_abdemo"
+
+    # Etiquetas que se agregarán automáticamente a cada PR de Dependabot
+    labels:
+      - "dependencies"
+      - "security"
+      - ".net"
+
+    # Estrategia de versionado:
+    #   lockfile-only  → solo actualiza el lock file, no el rango en el .csproj
+    #   auto           → Dependabot elige la estrategia más adecuada
+    #   increase       → solo sube la versión, nunca baja
+    #   increase-if-necessary → sube solo si es necesario para resolver conflictos
+    versioning-strategy: "auto"
+
+    # Grupos: permite agrupar múltiples actualizaciones en un solo PR
+    # para reducir el ruido. Aquí se agrupan todos los paquetes de Microsoft.
+    groups:
+      microsoft-packages:
+        patterns:
+          - "Microsoft.*"           # Agrupa todos los paquetes que empiecen con Microsoft.
+          - "System.*"              # También los paquetes System.*
+      third-party-packages:
+        patterns:
+          - "Newtonsoft.*"
+          - "log4net"
+          - "Swashbuckle.*"
+
+    # ignore: permite excluir paquetes o versiones específicas.
+    # Útil cuando un upgrade rompe compatibilidad y se quiere posponer.
+    # ignore:
+    #   - dependency-name: "Newtonsoft.Json"
+    #     versions: ["13.x"]         # ignora la versión 13.x específicamente
+    #   - dependency-name: "log4net"
+    #     update-types: ["version-update:semver-major"]  # ignora major updates
+
+    # Mensaje personalizado para el commit que crea Dependabot
+    commit-message:
+      prefix: "chore"              # Prefijo del commit (feat | fix | chore | etc.)
+      prefix-development: "chore"
+      include: "scope"             # Incluye el nombre del paquete en el scope
+
+  # ── GitHub Actions ────────────────────────────────────────────────────────────
+  # Dependabot también puede mantener actualizadas las Actions de los workflows.
+  # Ejemplo: actions/checkout@v3 → actions/checkout@v4
+  - package-ecosystem: "github-actions"
+    directory: "/"                 # Las Actions siempre se buscan desde la raíz
+    schedule:
+      interval: "monthly"          # Las Actions cambian menos seguido
+      time: "09:00"
+      timezone: "America/Mexico_City"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
