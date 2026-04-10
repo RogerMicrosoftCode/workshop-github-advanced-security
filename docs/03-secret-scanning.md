@@ -93,6 +93,10 @@ GitHub notifica al proveedor → el token puede ser revocado automáticamente
 
 ## Paso 4 — Push Protection
 
+> **📌 Concepto clave (GH-500 Q26):** Secret scanning push protection es una feature **proactiva** que escanea el código **durante el proceso de push**. Si detecta un secreto, **bloquea el push antes de que el código sea agregado al repositorio**, previniendo la exposición accidental de información sensible.
+>
+> Esto la diferencia de Secret Scanning estándar, que detecta secretos **después** de que ya están en el historial de Git.
+
 Push Protection bloquea el push **antes** de que el secreto llegue al repositorio. Es la capa de prevención, mientras que Secret Scanning es la capa de detección.
 
 ### Habilitar Push Protection
