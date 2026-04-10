@@ -1,0 +1,94 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# dependency-review.yml — Revisión de dependencias con cambios de vulnerabilidades
+#
+# Dependency Review analiza el DIFF de dependencias entre el branch base y el
+# branch de origen de un PR. Detecta paquetes que:
+#   • Introducen CVEs nuevos al mergear
+#   • Cambian de una licencia permitida a una no permitida
+#   • Añaden dependencias con severidad alta/crítica
+#
+# Este workflow usa los dos triggers válidos para Dependency Review:
+#
+#   pull_request:
+#     Trigger principal. Se ejecuta automáticamente cuando se abre, sincroniza
+#     o reabre un PR. Compara las dependencias del branch origen vs el base.
+#     Es la forma recomendada — bloquea el merge si encuentra vulnerabilidades.
+#
+#   workflow_dispatch:
+#     Trigger manual desde la pestaña Actions. Permite ejecutar la revisión
+#     on-demand, útil para auditorías puntuales o para probar la configuración
+#     sin necesidad de abrir un PR.
+#
+# NOTA: "trigger" y "commit" NO son eventos válidos de GitHub Actions.
+# Los únicos eventos reconocidos son los definidos en:
+# https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: "Dependency Review"
+
+on:
+  # Trigger 1 — Pull Request (trigger principal de Dependency Review)
+  # Se activa en los tres momentos del ciclo de vida de un PR:
+  #   opened       → cuando se abre el PR por primera vez
+  #   synchronize  → cuando se hace push adicional al branch del PR
+  #   reopened     → cuando se reactiva un PR cerrado
+  #
+  # En cada ejecución compara el árbol de dependencias del base branch vs el
+  # head branch y reporta qué paquetes se añadieron, eliminaron o actualizaron.
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  # Trigger 2 — Manual (workflow_dispatch)
+  # Permite lanzar la revisión manualmente desde:
+  #   GitHub UI → pestaña Actions → "Dependency Review" → "Run workflow"
+  #
+  # Útil para:
+  #   • Auditar dependencias en cualquier momento sin esperar un PR
+  #   • Probar cambios en la configuración de este workflow
+  #   • Revisiones periódicas bajo demanda
+  #
+  # LIMITACIÓN: workflow_dispatch no tiene un diff de PR, por lo que en este
+  # trigger la action revisa el estado actual del branch contra su historial.
+  workflow_dispatch:
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Requerido para leer el contenido del repositorio y el grafo de dependencias
+      contents: read
+      # Requerido para publicar los comentarios de revisión en el PR
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # dependency-review-action compara el snapshot de dependencias antes y
+      # después del cambio, reportando nuevas vulnerabilidades introducidas.
+      #
+      # Configuración de severidad:
+      #   fail-on-severity: moderate → bloquea el PR si hay CVEs moderate, high o critical
+      #   Opciones: low | moderate | high | critical
+      #
+      # Configuración de licencias:
+      #   deny-licenses → lista de licencias que NO están permitidas en este proyecto
+      #   allow-licenses → alternativa: solo permite las licencias listadas
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Bloquea el merge si se introduce alguna vulnerabilidad de severidad
+          # "moderate" o superior. Cambia a "high" para ser menos estricto.
+          fail-on-severity: moderate
+
+          # Licencias no permitidas en este proyecto.
+          # GPL y AGPL son copyleft — pueden obligar a publicar el código fuente.
+          deny-licenses: GPL-2.0, GPL-3.0, AGPL-3.0
+
+          # Publica un comentario en el PR con el resumen de vulnerabilidades
+          # encontradas, incluyendo el nombre del paquete, versión afectada y CVE.
+          comment-summary-in-pr: always
