@@ -19,10 +19,6 @@
 #     on-demand, útil para auditorías puntuales o para probar la configuración
 #     sin necesidad de abrir un PR.
 #
-# NOTA: "trigger" y "commit" NO son eventos válidos de GitHub Actions.
-# Los únicos eventos reconocidos son los definidos en:
-# https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
-# ──────────────────────────────────────────────────────────────────────────────
 
 name: "Dependency Review"
 
