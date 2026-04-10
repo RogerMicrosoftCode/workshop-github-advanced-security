@@ -41,6 +41,10 @@ completo para que lo personalices.
 
 Abre `.github/workflows/codeql.yml`. El archivo define dos jobs:
 
+> **📌 Concepto clave (GH-500):** Para lenguajes compilados (C#, Java, C/C++, Go, Swift), CodeQL realiza la extracción **monitoreando el proceso de build**. Observa los comandos de compilación (`make`, `javac`, `dotnet build`) y extrae los datos relevantes de cada paso ejecutado. Con esta información construye una **base de datos semántica** del código.
+>
+> Este enfoque garantiza que CodeQL capture una representación precisa y real del código tal como se compila, incluyendo configuraciones específicas de plataforma o lógica condicional usada durante el build.
+
 ### Job 1: `analyze-autobuild`
 
 ```yaml
