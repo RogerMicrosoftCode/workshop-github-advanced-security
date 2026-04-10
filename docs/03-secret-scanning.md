@@ -63,6 +63,60 @@ Para cada alerta verás:
 
 ---
 
+## Paso 2b — Validity Checks: priorizar alertas de riesgo inmediato
+
+> **📌 Concepto clave (GH-500 Q30):** **Secret validation** (validity checks) verifica si un secreto encontrado en el repositorio **sigue activo y válido** con el proveedor emisor (AWS, GitHub, Stripe, etc.). Si el secreto está activo, la alerta se marca como **"Active"** — lo que indica un riesgo de seguridad inmediato y explotable. Esto permite al equipo priorizar esas alertas sobre las de secretos ya expirados o revocados.
+
+### Estados de validación
+
+| Badge en la alerta | Estado | Significado |
+|---|---|---|
+| `Active` | Verificado activo | El proveedor confirmó que el secreto es válido — **atender de inmediato** |
+| `Inactive` | Verificado inactivo | El secreto fue revocado — verificar que no hubo acceso no autorizado |
+| `Unknown` | No verificable | GitHub no puede validar este tipo de secreto con el proveedor |
+
+### Cómo habilitarlo
+
+**GitHub tokens** — activo por defecto en todos los repos con Secret Scanning habilitado, sin configuración adicional.
+
+**Partner patterns** (AWS, Stripe, SendGrid, Google, etc.) — requiere habilitación explícita:
+
+```
+Settings → Code security → Secret scanning → Validity checks → Enable
+```
+
+O a nivel organización vía Security Configurations:
+```
+Organization Settings → Code security → Configurations → [tu config] → Validity checks
+```
+
+> **Requisito de licencia:** GitHub Team, o GitHub Enterprise Cloud/Server con **GitHub Secret Protection**.
+
+### On-demand validity check
+
+Una vez habilitado, en cada alerta aparece el botón **"Verify secret"** para lanzar una verificación inmediata contra el proveedor sin esperar el siguiente scan automático.
+
+### Secretos del proyecto y su validación
+
+| Secreto | Tipo | Validación disponible |
+|---|---|---|
+| `ghp_...` en `AuthService.cs` | GitHub PAT | ✅ Activa por defecto |
+| `AKIA...` en `AuthService.cs` | AWS Access Key | ✅ Con validity checks habilitado |
+| `pk_live_...` en `appsettings.json` | Stripe Live Key | ✅ Con validity checks habilitado |
+| `SG....` en `appsettings.json` | SendGrid API Key | ✅ Con validity checks habilitado |
+| `JWT_SECRET` en `appsettings.json` | Custom JWT secret | ❌ `Unknown` — sin endpoint de validación |
+| Azure Storage connection string | Azure Storage | ❌ `Unknown` — no soportado actualmente |
+
+### Otras features de evaluación de alertas
+
+- **GitHub token metadata** *(preview)*: para tokens activos muestra owner, fecha de creación, último uso y si tiene acceso a organizaciones.
+- **Extended metadata** *(preview)*: para OpenAI API, Google OAuth y Slack — muestra owner ID, email, nombre de org y fecha de expiración.
+- **Alert labels**: etiquetas adicionales en la alerta:
+  - `public leak` → el mismo secreto fue encontrado en código público
+  - `multi-repo` → el secreto existe en múltiples repos de la organización
+
+---
+
 ## Paso 3 — Entender el flujo de detección
 
 ```
@@ -93,7 +147,7 @@ GitHub notifica al proveedor → el token puede ser revocado automáticamente
 
 ## Paso 4 — Push Protection
 
-> **📌 Concepto clave (GH-500 Q26):** Secret scanning push protection es una feature **proactiva** que escanea el código **durante el proceso de push**. Si detecta un secreto, **bloquea el push antes de que el código sea agregado al repositorio**, previniendo la exposición accidental de información sensible.
+> **📌 Concepto clave:** Secret scanning push protection es una feature **proactiva** que escanea el código **durante el proceso de push**. Si detecta un secreto, **bloquea el push antes de que el código sea agregado al repositorio**, previniendo la exposición accidental de información sensible.
 >
 > Esto la diferencia de Secret Scanning estándar, que detecta secretos **después** de que ya están en el historial de Git.
 
