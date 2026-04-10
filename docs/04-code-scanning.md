@@ -107,6 +107,30 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 > | `.qll` | **Librería** | Código reutilizable importado por archivos `.ql` |
 > | `.yml` | **Workflow** | Configura GitHub Actions — no tiene relación con query suites |
 
+### Opciones para agregar queries adicionales
+
+> **📌 Concepto clave (GH-500):** Al configurar Code Scanning con CodeQL, hay **dos formas** de especificar queries adicionales en el workflow:
+>
+> | Opción | Parámetro | Descripción |
+> |---|---|---|
+> | **Packs** | `packs:` | Instala uno o más CodeQL query packs y ejecuta su suite por defecto. Formato: `scope/pack-name@version` |
+> | **Queries** | `queries:` | Apunta a un archivo `.ql`, un directorio con múltiples `.ql`, un archivo `.qls`, o cualquier combinación |
+>
+> `github/codeql` es un nombre de repositorio, **no** es un parámetro de configuración válido. `scope` es la cuenta/org que publicó un pack — tampoco es un parámetro.
+>
+> Se pueden usar `packs` y `queries` **juntos** en el mismo workflow.
+
+```yaml
+# Ejemplo combinando packs + queries en el mismo job
+- uses: github/codeql-action/init@v3
+  with:
+    languages: csharp
+    # queries: apunta a una suite o archivo .ql
+    queries: security-extended
+    # packs: instala packs adicionales de una org/cuenta
+    packs: my-company/my-csharp-queries@1.0.0
+```
+
 **Ejemplo de custom query suite** (`.qls`) para ejecutar solo las queries de SQL Injection y Path Traversal del pack de C#:
 
 ```yaml
