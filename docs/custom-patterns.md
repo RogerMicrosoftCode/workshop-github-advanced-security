@@ -38,6 +38,18 @@ Settings → Security → Secret scanning → Custom patterns → New pattern
 | **After secret** | ❌ Opcional | Regex de contexto DESPUÉS del secreto |
 | **Additional match** | ❌ Opcional | Regex adicional que también debe coincidir en el mismo archivo |
 
+### Restricciones de Hyperscan (el motor regex de GitHub)
+
+> GitHub usa la librería [Hyperscan](https://github.com/intel/hyperscan), un subconjunto de PCRE con restricciones importantes:
+
+- **No se permiten patrones de longitud cero** en los campos Before/After secret.
+  Esto descarta `["']?`, `\s*`, `.*` y cualquier construcción con `?` o `*` que pueda coincidir con cero caracteres.
+- Usa cuantificadores acotados: `{1,5}` en lugar de `*`, `{1,1}` en lugar de `?`.
+- Los valores por defecto de GitHub son seguros y funcionan bien en la mayoría de casos:
+  - **Before secret (default):** `\A|[^0-9A-Za-z]` — inicio de línea O un carácter no alfanumérico
+  - **After secret (default):** `\z|[^0-9A-Za-z]` — fin de línea O un carácter no alfanumérico
+- Si no necesitas contexto específico, **deja los campos Before/After vacíos** para usar los defaults.
+
 ---
 
 ## Patrones de la demo (CustomPatternDemoService.cs)
@@ -56,9 +68,12 @@ Configuración del custom pattern:
 | Campo | Valor |
 |---|---|
 | Pattern name | `MYCO Internal API Key` |
-| Secret format | `MYCO-[A-Z]{3}-\d{4}-[a-f0-9]{8}` |
-| Before secret | `(api[_\-]?key\|token\|secret\|key)\s*[:=]\s*["']?` |
-| After secret | `["']?` |
+| Secret format | `MYCO-[A-Z]{3}-[0-9]{4}-[a-f0-9]{8}` |
+| Before secret | *(dejar vacío — usa el default `\A\|[^0-9A-Za-z]`)* |
+| After secret | *(dejar vacío — usa el default `\z\|[^0-9A-Za-z]`)* |
+| Additional match | `MYCO` |
+
+> El Secret format es suficientemente específico. Los campos Before/After se dejan vacíos para evitar errores de Hyperscan con cuantificadores de longitud cero.
 
 ---
 
@@ -74,9 +89,10 @@ Configuración del custom pattern:
 | Campo | Valor |
 |---|---|
 | Pattern name | `Internal Database Access Token` |
-| Secret format | `DB-TOKEN-\d{8}-[A-Za-z0-9]{16}` |
-| Before secret | `(db[_\-]?token\|database[_\-]?token)\s*[:=]\s*["']?` |
-| After secret | `["']?` |
+| Secret format | `DB-TOKEN-[0-9]{8}-[A-Za-z0-9]{16}` |
+| Before secret | *(dejar vacío)* |
+| After secret | *(dejar vacío)* |
+| Additional match | `DB-TOKEN` |
 
 ---
 
@@ -92,7 +108,9 @@ Configuración del custom pattern:
 | Campo | Valor |
 |---|---|
 | Pattern name | `Internal Service Account Key` |
-| Secret format | `SVC-[a-z]+-[a-z]+-[A-Za-z0-9+/]{24}` |
+| Secret format | `SVC-[a-z]+-[a-z]+-[A-Za-z0-9]{24}` |
+| Before secret | *(dejar vacío)* |
+| After secret | *(dejar vacío)* |
 
 ---
 
@@ -109,8 +127,9 @@ Configuración del custom pattern:
 |---|---|
 | Pattern name | `Internal Webhook Secret` |
 | Secret format | `whsec_[A-Za-z0-9]{40}` |
-| Before secret | `(webhook[_\-]?secret\|wh[_\-]?secret)\s*[:=]\s*["']?` |
-| After secret | `["']?` |
+| Before secret | *(dejar vacío)* |
+| After secret | *(dejar vacío)* |
+| Additional match | `whsec_` |
 
 ---
 
