@@ -309,6 +309,4 @@ git push origin --delete demo/vulnerable-package
 
 ## Siguiente paso
 
-Vuelve al índice del workshop:
-
-[README.md — Workshop: GitHub Advanced Security](../README.md)
+➡️ [Lab 06 — GHAS a escala: Security Configurations y Global Settings](./06-ghas-at-scale.md)

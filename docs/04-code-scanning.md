@@ -519,3 +519,5 @@ Observa que el check de CodeQL **no aparece** en el PR porque la rama origen no 
 ## Siguiente paso
 
 ➡️ [Lab 05 — Dependency Review: bloqueo de CVEs en Pull Requests](./05-dependency-review.md)
+
+🏢 ¿Quieres configurar GHAS en toda la organización? ➡️ [Lab 06 — GHAS a escala](./06-ghas-at-scale.md)

@@ -127,3 +127,5 @@ workshop-github-advanced-security/
 ## Siguiente paso
 
 ➡️ [Lab 02 — Dependabot: gestión de dependencias vulnerables](./02-dependabot.md)
+
+🏢 ¿Quieres habilitar GHAS en múltiples repositorios a la vez? ➡️ [Lab 06 — GHAS a escala](./06-ghas-at-scale.md)
