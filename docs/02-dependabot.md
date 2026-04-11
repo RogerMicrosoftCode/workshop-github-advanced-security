@@ -9,6 +9,49 @@
 
 ---
 
+## ¿Qué es el Dependency Graph?
+
+El **Dependency Graph** es el pilar de toda la seguridad de la cadena de suministro en GitHub. Sin él, Dependabot y Dependency Review no funcionan.
+
+> **📌 Concepto clave:** El Dependency Graph es un resumen de todos los manifiestos y lock files de un repositorio. GitHub lo construye **automáticamente** analizando esos archivos y muestra, para cada repositorio:
+> - **Dependencies** — los ecosistemas y paquetes de los que depende el proyecto
+> - **Dependents** — otros repositorios que dependen de este proyecto
+>
+> Fuente: [About the dependency graph — GitHub Docs](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph)
+
+### ¿Cómo se construye?
+
+GitHub parsea automáticamente los archivos de dependencias del repositorio:
+
+| Ecosistema | Archivos que lee |
+|---|---|
+| NuGet (.NET) | `*.csproj`, `packages.config`, `*.deps.json` |
+| npm (Node.js) | `package.json`, `package-lock.json`, `yarn.lock` |
+| Maven (Java) | `pom.xml` |
+| PyPI (Python) | `requirements.txt`, `Pipfile`, `pyproject.toml` |
+| RubyGems | `Gemfile`, `Gemfile.lock` |
+| Go | `go.mod`, `go.sum` |
+
+Puedes ver el Dependency Graph en: **Repositorio → Insights → Dependency graph**
+
+### ¿Para qué sirve?
+
+| Feature | Depende del Dependency Graph |
+|---|---|
+| **Dependabot Alerts** | ✅ Sí — necesita saber qué paquetes usa el repo |
+| **Dependabot Security Updates** | ✅ Sí |
+| **Dependency Review** | ✅ Sí — compara el grafo antes y después del PR |
+| **SBOM export** | ✅ Sí — exporta el inventario completo de dependencias |
+| **Code Scanning (CodeQL)** | ❌ No — funciona a nivel de código fuente |
+
+### Disponibilidad
+
+- **Repositorios públicos:** habilitado por defecto
+- **Repositorios privados:** requiere habilitación en Settings → Code security → Dependency graph
+- **Con GHAS:** también habilita Dependency Review automáticamente cuando Dependency Graph + Code Security están activos
+
+---
+
 ## Contexto: ¿Qué es Dependabot?
 
 Dependabot analiza el archivo de dependencias del proyecto (`.csproj`, `package.json`, `pom.xml`, etc.) y compara las versiones usadas contra la base de datos de advisories de GitHub (basada en CVE/NVD).
