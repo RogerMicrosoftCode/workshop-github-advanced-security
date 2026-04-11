@@ -2,7 +2,7 @@
 
 Bienvenido al workshop de **GitHub Advanced Security**. Antes de entrar en las vulnerabilidades y las herramientas de detección, necesitamos que el entorno esté listo y que entiendas qué hace la aplicación demo que usaremos para todo el workshop.
 
-Este lab es corto; en 15 minutos tendrás el proyecto corriendo localmente, habrás explorado la API y habrás habilitado GHAS en el repositorio.
+Este lab es corto, en 15 minutos tendrás el proyecto corriendo localmente, habrás explorado la API y habrás habilitado GHAS en el repositorio.
 
 ## ¿Qué vas a hacer en este lab?
 
@@ -140,7 +140,7 @@ workshop-github-advanced-security/
 
 ¡Entorno listo! Ahora empieza la parte entretenida.
 
-Los labs 02 al 05 son independientes entre sí; puedes seguirlos en cualquier orden, aunque los recomendamos en secuencia:
+Los labs 02 al 05 son independientes entre sí, puedes seguirlos en cualquier orden, aunque los recomendamos en secuencia:
 
 ➡️ **Siguiente:** [Lab 02 — Dependabot: alertas de CVEs en dependencias](./02-dependabot.md)
 
