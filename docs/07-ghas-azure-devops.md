@@ -220,6 +220,8 @@ steps:
 
 ## Parte 5 — PR Annotations y Status Checks
 
+Ejecutar los scans en un pipeline es solo la mitad del trabajo: los resultados necesitan llegar al flujo de revisión del código para que el equipo pueda actuar sobre ellos. Azure DevOps ofrece dos mecanismos complementarios: las **PR annotations** muestran los hallazgos directamente en el diff del código, y los **status checks** pueden bloquear el merge cuando se encuentran vulnerabilidades de alta severidad.
+
 ### PR Annotations
 
 Al añadir las tareas de dependency scanning y/o code scanning a un pipeline con **build validation policy**, Azure DevOps añade automáticamente **anotaciones al PR** con los resultados.

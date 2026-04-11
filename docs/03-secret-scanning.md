@@ -69,6 +69,8 @@ Para cada alerta verás:
 
 ## Paso 2b — Validity Checks: priorizar alertas de riesgo inmediato
 
+No todas las alertas de Secret Scanning tienen la misma urgencia: un secreto que ya fue revocado no representa el mismo riesgo que uno que todavía funciona. Validity Checks resuelve exactamente ese problema al consultar al proveedor del token para verificar si el secreto detectado sigue activo, permitiendo al equipo priorizar las alertas que requieren atención inmediata.
+
 > **📌 Concepto clave:** **Secret validation** (validity checks) verifica si un secreto encontrado en el repositorio **sigue activo y válido** con el proveedor emisor (AWS, GitHub, Stripe, etc.). Si el secreto está activo, la alerta se marca como **"Active"** — lo que indica un riesgo de seguridad inmediato y explotable. Esto permite al equipo priorizar esas alertas sobre las de secretos ya expirados o revocados.
 
 ### Estados de validación
@@ -150,6 +152,8 @@ flowchart TD
 ---
 
 ## Paso 4 — Push Protection
+
+Secret Scanning detecta secretos después de que ya están en el historial de Git. Push Protection va un paso más atrás en el proceso: intercepta el push antes de que el código llegue al servidor y lo bloquea si contiene un secreto reconocido. Esto evita que el secreto entre al historial, eliminando la necesidad de revotar y rotar credenciales más adelante.
 
 > **📌 Concepto clave:** Secret scanning push protection es una feature **proactiva** que escanea el código **durante el proceso de push**. Si detecta un secreto, **bloquea el push antes de que el código sea agregado al repositorio**, previniendo la exposición accidental de información sensible.
 >

@@ -143,6 +143,8 @@ updates:
 
 ### Conceptos clave de la configuración
 
+El archivo `dependabot.yml` tiene campos obligatorios sin los cuales Dependabot no puede operar y campos opcionales que personalizan su comportamiento. Entender cuáles son cuáles evita errores de configuración silenciosos donde Dependabot queda activo pero sin hacer nada.
+
 > **📌 Concepto clave:** En `dependabot.yml`, la clave **`package-ecosystem`** es **obligatoria** en cada entrada de `updates`. Sin ella, Dependabot no puede determinar qué gestor de paquetes usar ni cómo analizar las dependencias. En cambio, claves como `rebase-strategy`, `commit-message` o `groups` son **opcionales** y solo personalizan el comportamiento.
 
 **`package-ecosystem: nuget`** *(obligatoria)*

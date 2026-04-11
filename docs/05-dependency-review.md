@@ -129,6 +129,8 @@ on:
 
 ## Paso 1 — Revisar la configuración actual
 
+El repositorio ya incluye la Dependency Review Action con parámetros específicos para el workshop. Revisa cada opción para entender qué criterios determinan si el check falla o pasa, ya que esta misma configuración es la que verás en acción en el siguiente paso.
+
 ```yaml
 - name: Dependency Review
   uses: actions/dependency-review-action@v4

@@ -140,6 +140,8 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 
 ### Extensiones de archivo en CodeQL
 
+En CodeQL, el tipo de archivo determina su función dentro del sistema de análisis. No todos los archivos con extensión parecida tienen el mismo rol: un `.ql` contiene una query individual mientras que un `.qls` agrupa varias en una suite. Confundirlos al configurar el workflow genera errores difíciles de diagnosticar.
+
 > **📌 Concepto clave:** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub, no es necesario escribir la ruta completa.
 >
 > | Extensión | Tipo | Descripción |
@@ -150,6 +152,8 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 > | `.yml` | **Workflow** | Configura GitHub Actions, sin relación con query suites |
 
 ### Opciones para agregar queries adicionales
+
+Cuando las suites built-in no cubren un caso de uso específico (por ejemplo, queries propietarias del equipo de seguridad), CodeQL ofrece dos mecanismos para incorporar lógica adicional: `packs`, que instalan colecciones publicadas en un registry, y `queries`, que apuntan a archivos o directorios locales. Ambos son compatibles y pueden convivir en el mismo job.
 
 > **📌 Concepto clave:** Al configurar Code Scanning con CodeQL, hay **dos formas** de especificar queries adicionales en el workflow:
 >
@@ -388,6 +392,8 @@ public UserData? DeserializeUserData(string json)
 
 ### Filtrar alertas
 
+Cuando el análisis finaliza, GitHub puede mostrar decenas de alertas de distintas herramientas y severidades. Los filtros de la vista de Code Scanning permiten reducir el ruido y centrarse primero en los hallazgos de mayor riesgo.
+
 ```
 Tool: CodeQL
 Severity: High, Critical
@@ -409,6 +415,8 @@ Herramienta de análisis          GitHub Code Scanning
 ```
 
 ### CodeQL vs herramientas SARIF de terceros
+
+Cualquier herramienta de análisis estático que genere archivos SARIF puede publicar resultados en Code Scanning de GitHub. Sin embargo, existe una diferencia importante en cómo llegan esos resultados a la plataforma dependiendo de si la herramienta es CodeQL nativo o una solución de terceros como Semgrep, Snyk o Trivy.
 
 > **📌 Concepto clave:** Cuando usas una herramienta **SARIF-compatible de tercero** (no CodeQL) en GitHub Actions, **debes agregar manualmente un paso final** que suba el archivo `.sarif` a GitHub con `github/codeql-action/upload-sarif`. Sin ese paso, el archivo se genera en el runner pero GitHub nunca recibe los resultados.
 >
@@ -444,6 +452,8 @@ jobs:
 ```
 
 ### Estructura básica de un archivo SARIF
+
+Un archivo SARIF es un JSON estructurado en `runs`: cada run corresponde a una ejecución de una herramienta y contiene la lista de resultados (`results`) con el identificador de la regla, el mensaje, la ubicación exacta en el código y el nivel de severidad. Conocer esta estructura ayuda a depurar integraciones cuando los resultados no aparecen en GitHub o cuando se quiere generar SARIF programáticamente.
 
 ```json
 {
