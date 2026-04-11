@@ -96,6 +96,18 @@ queries: security-extended
 
 Para este workshop se usa `security-extended` para maximizar las alertas detectadas.
 
+> **📌 Concepto clave (GH-500):** `security-extended` incluye **todas las queries del suite `default` más queries adicionales que detectan issues de menor severidad**. Estas queries adicionales tienen ligeramente menor precisión, por lo que pueden generar más falsos positivos que `default`.
+>
+> En el examen, las otras opciones de respuesta suelen ser **rutas a language packs** (ej. `codeql/csharp-queries`) — los language packs contienen las queries individuales, pero no son query suites en sí mismos. Solo `security-extended` (y `default`) son query suites built-in con nombre corto reconocido por GHAS.
+>
+> **Comparación directa:**
+> | Suite | Queries incluidas | Precisión | Cuándo usarlo |
+> |---|---|---|---|
+> | `default` | Solo queries de alta confianza | Alta, pocos FP | Proyectos en producción con bajo ruido |
+> | `security-extended` | `default` + queries de menor severidad | Media, más FP | Más visibilidad, code hygiene, workshops |
+>
+> Fuente: [CodeQL query suites — GitHub Docs](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-query-suites)
+
 ### Extensiones de archivo en CodeQL
 
 > **📌 Concepto clave (GH-500 Q34):** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub — no es necesario escribir la ruta completa.
