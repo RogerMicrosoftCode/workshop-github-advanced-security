@@ -23,6 +23,42 @@ Estas dos herramientas trabajan en momentos distintos del ciclo de vida:
 
 **En resumen:** Dependabot arregla lo que ya tienes. Dependency Review previene que entren nuevos problemas.
 
+> **📌 Concepto clave (GH-500):** Para **detectar y bloquear dependencias vulnerables antes del merge**, los desarrolladores deben usar la **Dependency Review GitHub Action** en sus workflows de pull request. La action escanea todos los cambios de dependencias propuestos y marca los paquetes con vulnerabilidades conocidas.
+>
+> Es una **medida preventiva durante el desarrollo**, a diferencia de Dependabot, que **reacciona después del hecho** (cuando la dependencia vulnerable ya está en el repositorio).
+>
+> | Herramienta | Momento | Mecanismo |
+> |---|---|---|
+> | **Dependency Review Action** | **Antes** del merge (en el PR) | Bloquea el PR con un check fallido |
+> | **Dependabot** | **Después** (dependencia ya en el repo) | Abre un PR para actualizar la versión |
+>
+> Fuente: [About dependency review — GitHub Docs](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-dependency-review#about-the-dependency-review-action)
+
+**Ejemplo — workflow mínimo para bloquear PRs con dependencias vulnerables:**
+
+```yaml
+# .github/workflows/dependency-review.yml
+name: Dependency Review
+
+on:
+  pull_request:   # OBLIGATORIO: solo funciona en pull_request, no en push
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate   # falla ante CVEs de severidad Media, Alta o Crítica
+```
+
+> ⚠️ El trigger debe ser `pull_request`. Con `push` o `workflow_dispatch` la action no puede comparar el diff de dependencias y falla.
+
 ---
 
 ## El workflow de Dependency Review
@@ -50,7 +86,7 @@ Permite ejecutar manualmente el análisis desde la UI de GitHub → **Actions** 
 
 ### `paths-ignore` — Excluir archivos que no afectan dependencias
 
-> **📝 Nota GH-500:** `paths-ignore` en el trigger `pull_request` del workflow YAML controla qué cambios de archivos **activan** el workflow, no qué archivos se analizan.
+> **📝 Nota:** `paths-ignore` en el trigger `pull_request` del workflow YAML controla qué cambios de archivos **activan** el workflow, no qué archivos se analizan.
 
 Con `paths-ignore`, el workflow **no se ejecuta** si el PR solo modifica archivos que coincidan con los patrones especificados. Esto evita runs innecesarios cuando nadie tocó las dependencias del proyecto.
 
