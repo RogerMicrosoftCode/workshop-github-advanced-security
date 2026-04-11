@@ -37,7 +37,7 @@ Este enfoque se llama **taint analysis** y es superior a los linters tradicional
 ### Nombre del archivo: `codeql.yml`
 
 Cuando habilitas Code Scanning con **Advanced Setup** desde la UI de GitHub
-(Settings → Code Security → Code scanning → Advanced), GitHub genera automáticamente
+(Settings → Advanced Security → Code Security → CodeQL analysis → Set up → Advanced), GitHub genera automáticamente
 un archivo llamado `codeql.yml` en `.github/workflows/`.
 
 Este nombre es el estándar del Advanced Setup: a diferencia del Default Setup

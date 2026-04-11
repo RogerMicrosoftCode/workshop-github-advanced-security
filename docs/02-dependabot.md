@@ -51,7 +51,7 @@ Puedes ver el Dependency Graph en: **Repositorio → Insights → Dependency gra
 ### Disponibilidad
 
 - **Repositorios públicos:** habilitado por defecto
-- **Repositorios privados:** requiere habilitación en Settings → Code security → Dependency graph
+- **Repositorios privados:** requiere habilitación en Settings → Advanced Security → Dependency graph
 - **Con GHAS:** también habilita Dependency Review automáticamente cuando Dependency Graph + Code Security están activos
 
 ---
@@ -201,8 +201,8 @@ dotnet list package --vulnerable
 
 Con Security Updates habilitadas, Dependabot abrirá PRs automáticos cuando detecte una CVE, sin esperar el ciclo semanal de Version Updates.
 
-1. Settings → Code security → Dependabot
-2. Activa **Dependabot security updates**
+1. Settings → Advanced Security
+2. Junto a **Dependabot security updates**, haz clic en **Enable**
 
 Cuando se publique una nueva CVE para una dependencia del proyecto, Dependabot abrirá un PR con el título:
 ```

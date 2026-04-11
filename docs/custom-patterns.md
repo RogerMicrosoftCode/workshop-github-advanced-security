@@ -33,8 +33,8 @@ Settings → Security → Secret scanning → Custom patterns → New pattern
 
 | Nivel | Aplica a | Ruta en GitHub |
 |---|---|---|
-| **Repository** | Solo el repo donde se configura | `Settings → Security → Secret scanning` |
-| **Organization** | Todos los repos de la organización | `Org Settings → Code security → Secret scanning` |
+| **Repository** | Solo el repo donde se configura | `Settings → Advanced Security → Secret Protection → Secret scanning` |
+| **Organization** | Todos los repos de la organización | `Org Settings → Advanced Security → Secret scanning` |
 | **Enterprise** | Toda la empresa | `Enterprise Settings → Code security` |
 
 > Los niveles de organización y empresa requieren licencia **GitHub Advanced Security (GHAS)**.

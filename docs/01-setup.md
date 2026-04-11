@@ -123,16 +123,20 @@ workshop-github-advanced-security/
 
 ## Paso 5 — Habilitar GitHub Advanced Security en el repositorio
 
-1. Ve a tu repositorio en GitHub
-2. Settings → Security → habilita las siguientes features:
+Todas las features de seguridad se gestionan desde un único lugar: **Settings → Advanced Security** (sección "Security" del sidebar).
 
-| Feature | Sección en Settings |
+1. Ve a tu repositorio en GitHub
+2. Haz clic en **Settings**
+3. En el sidebar izquierdo, dentro de la sección **Security**, haz clic en **Advanced Security**
+4. Habilita cada feature desde esa página:
+
+| Feature | Qué hacer en Advanced Security |
 |---|---|
-| Dependabot alerts | Code security → Dependabot |
-| Dependabot security updates | Code security → Dependabot |
-| Code scanning | Code security → Code scanning → Set up CodeQL |
-| Secret scanning | Code security → Secret scanning |
-| Push protection | Code security → Secret scanning → Push protection |
+| Dependabot alerts | Clic en **Enable** junto a "Dependabot alerts" |
+| Dependabot security updates | Clic en **Enable** junto a "Dependabot security updates" |
+| Code scanning (CodeQL) | Habilita **Code Security** → junto a "CodeQL analysis" selecciona **Set up → Default** |
+| Secret scanning | Habilita **Secret Protection** → clic en **Enable** junto a "Secret scanning" |
+| Push protection | Dentro de Secret Protection, habilita **Push protection** |
 
 ---
 

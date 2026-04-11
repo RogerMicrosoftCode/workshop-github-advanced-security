@@ -86,12 +86,12 @@ Para cada alerta verás:
 **Partner patterns** (AWS, Stripe, SendGrid, Google, etc.): requiere habilitación explícita:
 
 ```
-Settings → Code security → Secret scanning → Validity checks → Enable
+Settings → Advanced Security → Secret Protection → Validity checks → Enable
 ```
 
 O a nivel organización vía Security Configurations:
 ```
-Organization Settings → Code security → Configurations → [tu config] → Validity checks
+Organization Settings → Advanced Security → Security configurations → [tu config] → Validity checks
 ```
 
 > **Requisito de licencia:** GitHub Team, o GitHub Enterprise Cloud/Server con **GitHub Secret Protection**.
