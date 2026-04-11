@@ -221,7 +221,7 @@ Antes de empezar los labs, asegúrate de tener lo siguiente:
 ### Clonar el repositorio
 
 ```bash
-git clone https://github.com/armblaorg/workshop-github-advanced-security.git
+git clone https://github.com/armandoblanco/workshop-github-advanced-security.git
 cd workshop-github-advanced-security
 ```
 

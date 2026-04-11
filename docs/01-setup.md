@@ -27,7 +27,7 @@ Este lab es corto, en 15 minutos tendrás el proyecto corriendo localmente, habr
 ## Paso 1 — Clonar el repositorio
 
 ```bash
-git clone https://github.com/armblaorg/workshop-github-advanced-security.git
+git clone https://github.com/armandoblanco/workshop-github-advanced-security.git
 cd workshop-github-advanced-security
 ```
 
