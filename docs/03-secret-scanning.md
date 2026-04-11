@@ -155,8 +155,59 @@ Push Protection bloquea el push **antes** de que el secreto llegue al repositori
 
 ### Habilitar Push Protection
 
+Hay tres niveles de configuración, de más amplio a más específico:
+
+#### Nivel organización (aplica a todos los repos)
+
 ```
-Settings → Code security → Secret scanning → Push protection → Enable
+Organization Settings
+  → Code security
+    → Push protection
+      → Enable all
+```
+
+O mediante un **Security Configuration** aplicado a múltiples repos:
+
+```
+Organization Settings
+  → Code security
+  → Configurations
+    → [tu configuración]
+      → Secret scanning → Push protection → Enable
+  → Apply to repositories
+```
+
+#### Nivel repositorio individual
+
+```
+Repository Settings
+  → Code security
+    → Secret scanning
+      → Push protection → Enable
+```
+
+> **Requisito:** Secret scanning debe estar habilitado antes de activar Push Protection.
+
+#### Nivel usuario (para repos propios)
+
+```
+github.com → Settings (perfil)
+  → Code security and analysis
+    → Push protection for yourself → Enable
+```
+
+Esto activa Push Protection para todos los pushes del usuario, incluso a repos donde el admin no lo ha habilitado.
+
+#### Habilitar via API REST
+
+```bash
+# Habilitar a nivel repositorio
+curl -L \
+  -X PATCH \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  https://api.github.com/repos/ORG/REPO \
+  -d '{"security_and_analysis": {"secret_scanning_push_protection": {"status": "enabled"}}}'
 ```
 
 ### Demostración del bloqueo
@@ -232,9 +283,8 @@ Para que GitHub los detecte, debes crear un Custom Pattern con la regex correspo
 
 ## Paso 5b — Excluir archivos y directorios del escaneo
 
-> **📌 Concepto clave (GH-500):** Para excluir rutas específicas de Secret Scanning se usa la clave `paths-ignore:` — pero **no en el workflow YAML**. Se configura en el archivo **`.github/secret_scanning.yml`** del repositorio.
+> **📌 Concepto clave:** Para excluir rutas específicas de Secret Scanning se usa la clave `paths-ignore:` Se configura en el archivo **`.github/secret_scanning.yml`** del repositorio.
 >
-> ⚠️ **Corrección frecuente en el examen:** la pregunta puede decir "YAML workflow file" — eso es incorrecto. El archivo correcto es `.github/secret_scanning.yml`.
 
 ### Crear el archivo de configuración
 
