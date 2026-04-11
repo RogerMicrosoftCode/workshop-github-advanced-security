@@ -18,6 +18,7 @@ Al completar el workshop entenderás cómo configurar y demostrar:
 | **Code Scanning (CodeQL)** | Vulnerabilidades en el flujo de datos del código | [Lab 04](./docs/04-code-scanning.md) |
 | **Dependency Review** | CVEs en dependencias nuevas en cada PR | [Lab 05](./docs/05-dependency-review.md) |
 | **GHAS a escala** | Security Configurations y Global Settings en la org | [Lab 06](./docs/06-ghas-at-scale.md) |
+| **GHAS en Azure DevOps** | GHAzDO: habilitar, pipelines, status checks | [Lab 07](./docs/07-ghas-azure-devops.md) |
 | **Custom Patterns** | Secretos de formato interno no conocidos por GitHub | [Guía](./docs/custom-patterns.md) |
 
 ---
@@ -51,6 +52,7 @@ ghas/
 │   ├── 04-code-scanning.md     # Lab: CodeQL
 │   ├── 05-dependency-review.md # Lab: Dependency Review
 │   ├── 06-ghas-at-scale.md     # Lab: GHAS a escala (org/enterprise)
+│   ├── 07-ghas-azure-devops.md # Lab: GHAS en Azure DevOps (GHAzDO)
 │   └── custom-patterns.md      # Guía: Custom Patterns
 ├── SECURITY.md                 # Política de seguridad
 └── README.md                   # Este archivo
@@ -123,9 +125,10 @@ ghas/
 | 04 | [Code Scanning](./docs/04-code-scanning.md) | Análisis de vulnerabilidades con CodeQL | 30 min |
 | 05 | [Dependency Review](./docs/05-dependency-review.md) | Bloquear CVEs en Pull Requests | 20 min |
 | 06 | [GHAS a escala](./docs/06-ghas-at-scale.md) | Security Configurations y Global Settings en la org | 20 min |
+| 07 | [GHAS en Azure DevOps](./docs/07-ghas-azure-devops.md) | GHAzDO: habilitar, pipelines, status checks | 25 min |
 | — | [Custom Patterns](./docs/custom-patterns.md) | Patrones regex para secretos internos | 20 min |
 
-**Tiempo total estimado:** ~2h 20min
+**Tiempo total estimado:** ~2h 45min
 
 ---
 

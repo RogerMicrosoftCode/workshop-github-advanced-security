@@ -286,6 +286,8 @@ Enterprise
 
 ## Siguiente paso
 
+🔵 ¿Usas Azure DevOps? ➡️ [Lab 07 — GHAS en Azure DevOps (GHAzDO)](./07-ghas-azure-devops.md)
+
 Vuelve al índice del workshop:
 
 [README.md — Workshop: GitHub Advanced Security](../README.md)
