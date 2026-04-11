@@ -25,7 +25,7 @@ Configurar GHAS repositorio por repositorio no es sostenible en organizaciones c
 **Security Configurations** → controlan si una feature está ON/OFF en un repo.
 **Global Settings** → controlan *cómo* se comportan esas features una vez habilitadas.
 
-> **📌 Concepto clave (GH-500):** Security Configurations son colecciones de settings de habilitación que se aplican a repositorios. Global Settings determinan la configuración a nivel organización que heredan todos los repositorios.
+> **📌 Concepto clave:** Security Configurations son colecciones de settings de habilitación que se aplican a repositorios. Global Settings determinan la configuración a nivel organización que heredan todos los repositorios.
 >
 > Fuente: [About enabling security features at scale — GitHub Docs](https://docs.github.com/en/code-security/securing-your-organization/introduction-to-securing-your-organization-at-scale/about-enabling-security-features-at-scale)
 

@@ -140,7 +140,7 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 
 ### Extensiones de archivo en CodeQL
 
-> **📌 Concepto clave (GH-500 Q34):** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub, no es necesario escribir la ruta completa.
+> **📌 Concepto clave:** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub, no es necesario escribir la ruta completa.
 >
 > | Extensión | Tipo | Descripción |
 > |---|---|---|

@@ -398,7 +398,7 @@ El script anterior activa GHAS en todos los proyectos **existentes**. Para que l
 | `Automatically enable Advanced Security for new repositories` (por proyecto) | Nuevos repos en ese proyecto |
 | `Automatically enable Advanced Security for new projects` (org) | Todos los proyectos nuevos en la org |
 
-> 📌 **Concepto clave (GH-500):** El botón "Enable all" en Organization Settings solo activa GHAS en los repositorios **existentes** en el momento del click. Para cubrir repos y proyectos futuros se necesita activar el toggle de auto-habilitación, o usar el script PowerShell periódicamente.
+> 📌 **Concepto clave:** El botón "Enable all" en Organization Settings solo activa GHAS en los repositorios **existentes** en el momento del click. Para cubrir repos y proyectos futuros se necesita activar el toggle de auto-habilitación, o usar el script PowerShell periódicamente.
 
 ---
 

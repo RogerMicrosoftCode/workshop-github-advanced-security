@@ -27,7 +27,7 @@ Estas dos herramientas trabajan en momentos distintos del ciclo de vida:
 
 **En resumen:** Dependabot arregla lo que ya tienes. Dependency Review previene que entren nuevos problemas.
 
-> **📌 Concepto clave (GH-500):** Para **detectar y bloquear dependencias vulnerables antes del merge**, los desarrolladores deben usar la **Dependency Review GitHub Action** en sus workflows de pull request. La action escanea todos los cambios de dependencias propuestos y marca los paquetes con vulnerabilidades conocidas.
+> **📌 Concepto clave:** Para **detectar y bloquear dependencias vulnerables antes del merge**, los desarrolladores deben usar la **Dependency Review GitHub Action** en sus workflows de pull request. La action escanea todos los cambios de dependencias propuestos y marca los paquetes con vulnerabilidades conocidas.
 >
 > Es una **medida preventiva durante el desarrollo**, a diferencia de Dependabot, que **reacciona después del hecho** (cuando la dependencia vulnerable ya está en el repositorio).
 >
