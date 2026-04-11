@@ -270,6 +270,133 @@ Project Settings → Repositories → [repo] → Security
 
 ---
 
+## Parte 7 — Habilitación a escala con REST API y PowerShell
+
+La UI solo permite habilitar GHAS proyecto a proyecto o una sola organización a la vez. En entornos con **decenas de proyectos y cientos de repositorios**, la opción práctica es usar la **REST API de Advanced Security** desde un script PowerShell.
+
+### REST API: Project Enablement - Update
+
+```
+PATCH https://advsec.dev.azure.com/{organization}/{project}/_apis/management/enablement?api-version=7.2-preview.3
+```
+
+**Body (JSON):**
+
+```json
+{
+  "secretProtectionFeatures": {
+    "secretProtectionEnabled": true,
+    "blockPushes": true
+  },
+  "codeSecurityFeatures": {
+    "codeSecurityEnabled": true
+  },
+  "enablementOnCreateSettings": {
+    "enableSecretProtectionOnCreate": true,
+    "enableCodeSecurityOnCreate": true,
+    "enableBlockPushesOnCreate": true,
+    "enableCodeQLOnCreate": true,
+    "enableDependabotOnCreate": true,
+    "enableDependencyScanningInjectionOnCreate": true
+  }
+}
+```
+
+| Campo | Descripción |
+|---|---|
+| `secretProtectionFeatures.secretProtectionEnabled` | Habilita Secret Protection (secret scanning + push protection) |
+| `secretProtectionFeatures.blockPushes` | Activa push protection (bloquea pushes con secretos) |
+| `codeSecurityFeatures.codeSecurityEnabled` | Habilita Code Security (dependency scanning + CodeQL) |
+| `enablementOnCreateSettings.*OnCreate` | Auto-habilita los productos en **nuevos** repositorios creados en el proyecto |
+
+> **Scope requerido en el PAT:** `Advanced Security: read, write, and manage`  
+> **Permiso requerido:** miembro de **Project Collection Administrators** o **Advanced Security: manage settings** en `Allow`
+
+### Script PowerShell — habilitar GHAS en todos los proyectos de una organización
+
+```powershell
+# Habilita GHAS (Secret Protection + Code Security) en todos los proyectos
+# de una organización de Azure DevOps usando la REST API.
+#
+# Requisitos:
+#   - PAT con scope "Advanced Security: read, write, and manage"
+#   - Usuario debe ser Project Collection Administrator
+
+$organization = "mi-organizacion"
+$pat          = "mi-PAT-aqui"
+
+# Construir el header de autenticación Basic (PAT)
+$base64Token = [Convert]::ToBase64String(
+    [Text.Encoding]::ASCII.GetBytes(":$pat")
+)
+$headers = @{
+    Authorization  = "Basic $base64Token"
+    "Content-Type" = "application/json"
+}
+
+# 1. Listar todos los proyectos de la organización
+$uriProjects = "https://dev.azure.com/$organization/_apis/projects?api-version=7.1"
+$projects = (Invoke-RestMethod -Method GET -Uri $uriProjects -Headers $headers).value |
+            Select-Object -Property id, name
+
+Write-Host "Encontrados $($projects.Count) proyectos en '$organization'"
+
+foreach ($project in $projects) {
+    $projectName = $project.name
+    Write-Host "`n→ Habilitando GHAS en proyecto: $projectName ..."
+
+    # 2. Habilitar Secret Protection + Code Security en todos los repos existentes
+    #    y configurar auto-habilitación para nuevos repos
+    $uri = "https://advsec.dev.azure.com/$organization/$projectName/_apis/management/enablement?api-version=7.2-preview.3"
+
+    $body = @{
+        secretProtectionFeatures = @{
+            secretProtectionEnabled = $true
+            blockPushes             = $true
+        }
+        codeSecurityFeatures = @{
+            codeSecurityEnabled = $true
+        }
+        enablementOnCreateSettings = @{
+            enableSecretProtectionOnCreate             = $true
+            enableCodeSecurityOnCreate                 = $true
+            enableBlockPushesOnCreate                  = $true
+            enableCodeQLOnCreate                       = $true
+            enableDependabotOnCreate                   = $true
+            enableDependencyScanningInjectionOnCreate  = $true
+        }
+    } | ConvertTo-Json -Depth 5
+
+    try {
+        Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -Body $body
+        Write-Host "  ✅ GHAS habilitado en $projectName"
+    } catch {
+        Write-Warning "  ❌ Error en $projectName : $_"
+    }
+}
+
+Write-Host "`n✅ Proceso completado para todos los proyectos."
+```
+
+> **Referencia oficial:** [Project Enablement - Update (REST API 7.2-preview.3) — Microsoft Learn](https://learn.microsoft.com/en-us/rest/api/azure/devops/advancedsecurity/project-enablement/update?view=azure-devops-rest-7.2)
+
+### Auto-habilitación para nuevos proyectos (Organization Settings)
+
+El script anterior activa GHAS en todos los proyectos **existentes**. Para que los **proyectos nuevos** hereden la configuración automáticamente:
+
+1. Ve a **Organization Settings → Repositories**
+2. Activa el toggle **"Automatically enable Advanced Security for new projects"**
+3. Selecciona los productos deseados y click **Begin billing**
+
+| Opción | Alcance |
+|---|---|
+| `Automatically enable Advanced Security for new repositories` (por proyecto) | Nuevos repos en ese proyecto |
+| `Automatically enable Advanced Security for new projects` (org) | Todos los proyectos nuevos en la org |
+
+> 📌 **Concepto clave (GH-500):** El botón "Enable all" en Organization Settings solo activa GHAS en los repositorios **existentes** en el momento del click. Para cubrir repos y proyectos futuros se necesita activar el toggle de auto-habilitación, o usar el script PowerShell periódicamente.
+
+---
+
 ## Resumen — Comparación de configuración
 
 | Feature | GHAS en GitHub.com | GHAzDO |
@@ -290,6 +417,7 @@ Project Settings → Repositories → [repo] → Security
 - [Configure GitHub Advanced Security for Azure DevOps — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/configure-github-advanced-security-features)
 - [Advanced Security billing — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/github-advanced-security-billing)
 - [Manage Advanced Security permissions — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/github-advanced-security-permissions)
+- [Project Enablement - Update (REST API 7.2-preview.3) — Microsoft Learn](https://learn.microsoft.com/en-us/rest/api/azure/devops/advancedsecurity/project-enablement/update?view=azure-devops-rest-7.2)
 - [Code scanning alerts for GHAzDO — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/github-advanced-security-code-scanning)
 - [Dependency scanning alerts for GHAzDO — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/github-advanced-security-dependency-scanning)
 - [Secret scanning alerts for GHAzDO — Microsoft Learn](https://learn.microsoft.com/en-us/azure/devops/repos/security/github-advanced-security-secret-scanning)
