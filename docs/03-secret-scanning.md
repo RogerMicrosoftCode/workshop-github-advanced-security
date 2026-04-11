@@ -65,7 +65,7 @@ Para cada alerta verás:
 
 ## Paso 2b — Validity Checks: priorizar alertas de riesgo inmediato
 
-> **📌 Concepto clave (GH-500 Q30):** **Secret validation** (validity checks) verifica si un secreto encontrado en el repositorio **sigue activo y válido** con el proveedor emisor (AWS, GitHub, Stripe, etc.). Si el secreto está activo, la alerta se marca como **"Active"** — lo que indica un riesgo de seguridad inmediato y explotable. Esto permite al equipo priorizar esas alertas sobre las de secretos ya expirados o revocados.
+> **📌 Concepto clave:** **Secret validation** (validity checks) verifica si un secreto encontrado en el repositorio **sigue activo y válido** con el proveedor emisor (AWS, GitHub, Stripe, etc.). Si el secreto está activo, la alerta se marca como **"Active"** — lo que indica un riesgo de seguridad inmediato y explotable. Esto permite al equipo priorizar esas alertas sobre las de secretos ya expirados o revocados.
 
 ### Estados de validación
 
@@ -227,6 +227,63 @@ Para que GitHub los detecte, debes crear un Custom Pattern con la regex correspo
 > ⚠️ Restricción de Hyperscan (el motor regex de GitHub):
 > Los campos Before/After secret **no aceptan** patrones de longitud cero como `["']?` o `\s*`.
 > Si necesitas contexto, deja esos campos vacíos y usa el default de GitHub.
+
+---
+
+## Paso 5b — Excluir archivos y directorios del escaneo
+
+> **📌 Concepto clave (GH-500):** Para excluir rutas específicas de Secret Scanning se usa la clave `paths-ignore:` — pero **no en el workflow YAML**. Se configura en el archivo **`.github/secret_scanning.yml`** del repositorio.
+>
+> ⚠️ **Corrección frecuente en el examen:** la pregunta puede decir "YAML workflow file" — eso es incorrecto. El archivo correcto es `.github/secret_scanning.yml`.
+
+### Crear el archivo de configuración
+
+```bash
+mkdir -p .github
+touch .github/secret_scanning.yml
+```
+
+### Excluir directorios (casos de uso comunes)
+
+```yaml
+# .github/secret_scanning.yml
+
+paths-ignore:
+  # Datos de prueba y mocks — secretos falsos para documentación
+  - "tests/**"
+  - "docs/examples/**"
+
+  # Fixtures y seeds de desarrollo
+  - "**/testdata/**"
+  - "src/**/fixtures/**"
+
+  # Archivos de configuración de ejemplo (no producción)
+  - "**/*.example"
+  - "**/*.sample"
+```
+
+Soporta glob patterns: `*`, `**`, `?`.
+
+### Comportamiento y límites
+
+| Aspecto | Detalle |
+|---|---|
+| Efecto | Las alertas de rutas excluidas se cierran automáticamente como "ignored by configuration" |
+| Push Protection | Las exclusiones también aplican a Push Protection |
+| Límite de entradas | Máximo 1,000 entradas en `paths-ignore` |
+| Límite de tamaño | Si el archivo supera 1 MB, se ignora por completo |
+
+### Verificar que la exclusión funciona
+
+1. Agrega un secreto de prueba en un archivo dentro de la ruta excluida
+2. Haz commit y push
+3. Ve a **Security → Secret scanning** — no debe aparecer ninguna alerta nueva para ese archivo
+
+### Cuándo NO usar `paths-ignore`
+
+- Nunca excluir rutas de producción (`src/`, `config/`, `app/`)
+- Documentar siempre en un comentario del archivo por qué se excluye cada ruta
+- Revisar el archivo periódicamente — las exclusiones antiguas pueden ocultar problemas reales
 
 ---
 
