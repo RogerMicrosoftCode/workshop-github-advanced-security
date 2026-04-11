@@ -1,0 +1,29 @@
+UsersApi – Release Notes
+========================
+
+v1.2.0 (2025-06-01)
+--------------------
+- Added report generation endpoint (/reports)
+- Improved authentication flow
+- Updated logging configuration
+
+v1.1.0 (2025-05-15)
+--------------------
+- Added user search functionality
+- Performance improvements in user listing
+- Fixed pagination bug
+
+v1.0.0 (2025-05-01)
+--------------------
+- Initial release
+- CRUD endpoints for users (/users)
+- Swagger UI available at /swagger
+
+----
+NOTA PARA EL WORKSHOP:
+Este archivo .txt existe para demostrar paths-ignore en el workflow de
+Dependency Review. Cambios en archivos .txt o .md no deben disparar
+una revisión de dependencias porque no modifican el grafo de dependencias
+del proyecto (.csproj, package.json, go.mod, etc.).
+
+Ver: .github/workflows/dependency-review.yml → paths-ignore

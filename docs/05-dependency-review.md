@@ -48,6 +48,43 @@ Permite ejecutar manualmente el análisis desde la UI de GitHub → **Actions** 
 
 Útil para demostraciones sin abrir un PR real, o para re-ejecutar el análisis después de actualizar la configuración.
 
+### `paths-ignore` — Excluir archivos que no afectan dependencias
+
+> **📝 Nota GH-500:** `paths-ignore` en el trigger `pull_request` del workflow YAML controla qué cambios de archivos **activan** el workflow, no qué archivos se analizan.
+
+Con `paths-ignore`, el workflow **no se ejecuta** si el PR solo modifica archivos que coincidan con los patrones especificados. Esto evita runs innecesarios cuando nadie tocó las dependencias del proyecto.
+
+```yaml
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      # Cambios solo en archivos .txt o .md no requieren dependency review
+      # ya que no modifican dependencias del proyecto
+      - '**/*.md'
+      - '**/*.txt'
+```
+
+**Comportamiento:**
+- PR modifica únicamente `docs/release-notes.txt` → workflow **no se ejecuta** ✅
+- PR modifica `src/UsersApi/UsersApi.csproj` → workflow **sí se ejecuta** ✅
+- PR modifica `README.md` + `UsersApi.csproj` → workflow **sí se ejecuta** (basta con un archivo fuera de paths-ignore)
+
+**`paths-ignore` vs `paths`:**
+
+| Filtro | Comportamiento |
+|---|---|
+| `paths-ignore: ['**/*.md']` | Ejecuta el workflow para **todos los archivos excepto** los `.md` |
+| `paths: ['**/*.csproj', '**/package.json']` | Ejecuta el workflow **solo si** se modifica un `.csproj` o `package.json` |
+
+**Archivo de ejemplo en el repo:** `docs/examples/release-notes.txt` — simula notas de versión que no deben disparar Dependency Review.
+
+> ⚠️ **Importante:** `paths-ignore` en el workflow YAML es diferente de `paths-ignore` en `.github/secret_scanning.yml`.
+> - Workflow YAML `paths-ignore` → controla **cuándo se ejecuta** el workflow
+> - `.github/secret_scanning.yml` `paths-ignore` → controla **qué archivos se escanean** en busca de secretos
+
 ---
 
 ## Paso 1 — Revisar la configuración actual

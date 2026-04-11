@@ -35,6 +35,11 @@ on:
     branches:
       - main
       - develop
+    paths-ignore:
+      # Cambios solo en archivos .txt o .md no requieren dependency review
+      # ya que no modifican dependencias del proyecto
+      - '**/*.md'
+      - '**/*.txt'
 
   # Trigger 2 — Manual (workflow_dispatch)
   # Permite lanzar la revisión manualmente desde:

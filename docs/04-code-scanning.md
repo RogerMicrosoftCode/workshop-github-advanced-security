@@ -368,7 +368,7 @@ Herramienta de análisis          GitHub Code Scanning
 
 ### CodeQL vs herramientas SARIF de terceros
 
-> **📌 Concepto clave (GH-500 Q37):** Cuando usas una herramienta **SARIF-compatible de tercero** (no CodeQL) en GitHub Actions, **debes agregar manualmente un paso final** que suba el archivo `.sarif` a GitHub con `github/codeql-action/upload-sarif`. Sin ese paso, el archivo se genera en el runner pero GitHub nunca recibe los resultados.
+> **📌 Concepto clave:** Cuando usas una herramienta **SARIF-compatible de tercero** (no CodeQL) en GitHub Actions, **debes agregar manualmente un paso final** que suba el archivo `.sarif` a GitHub con `github/codeql-action/upload-sarif`. Sin ese paso, el archivo se genera en el runner pero GitHub nunca recibe los resultados.
 >
 > En contraste, `github/codeql-action/analyze` (usado por CodeQL) **sube automáticamente** — el upload está integrado en la acción.
 
