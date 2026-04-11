@@ -1,6 +1,6 @@
 # Lab 07 — GHAS en Azure DevOps (GHAzDO)
 
-Tu organización usa Azure DevOps, no GitHub.com. ¿Means que te quedas sin GHAS? No. **GitHub Advanced Security for Azure DevOps (GHAzDO)** lleva exactamente las mismas capacidades — Secret Scanning, Dependency Scanning y Code Scanning con CodeQL — a los repositorios Git en Azure Repos.
+Tu organización usa Azure DevOps, no GitHub.com. ¿Means que te quedas sin GHAS? No. **GitHub Advanced Security for Azure DevOps (GHAzDO)** lleva exactamente las mismas capacidades (Secret Scanning, Dependency Scanning y Code Scanning con CodeQL) a los repositorios Git en Azure Repos.
 
 En este lab configurarás GHAzDO desde cero: habilitación, pipelines YAML, anotaciones en PRs, status checks y, en la última parte, automatización a escala con la API REST y PowerShell.
 
@@ -44,7 +44,7 @@ En este lab configurarás GHAzDO desde cero: habilitación, pipelines YAML, anot
 
 ## Billing: Active Committers
 
-GHAzDO se factura por **active committers** — committers únicos con al menos un push en los últimos 90 días en repositorios con Secret Protection o Code Security habilitados.
+GHAzDO se factura por **active committers**: committers únicos con al menos un push en los últimos 90 días en repositorios con Secret Protection o Code Security habilitados.
 
 **Puntos clave del modelo de billing:**
 - Se cobra mensualmente en la suscripción Azure asociada a la organización de Azure DevOps
@@ -74,7 +74,7 @@ Pasos:
 2. Selecciona **Repos → Repositories**
 3. Selecciona el repositorio destino
 4. Activa **Secret Protection** y/o **Code Security** con el toggle
-5. Click **Begin billing** — aparecerá un icono de escudo en la vista del repo
+5. Click **Begin billing**; apareceá un icono de escudo en la vista del repo
 6. Opcional: en **Options**, habilita **Dependency scanning default setup** para escaneo automático en la rama por defecto
 
 ### Nivel 2 — Proyecto completo
@@ -90,9 +90,9 @@ Project Settings → Repos → Settings tab
 Pasos:
 1. Ve a **Project Settings → Repos**
 2. Selecciona el tab **Settings**
-3. Click **Enable all** — verás la estimación de active committers
+3. Click **Enable all**; verás la estimación de active committers
 4. Activa **Secret Protection** y/o **Code Security** y sus sub-features
-5. Click **Begin billing** — activa ambos productos en todos los repos existentes del proyecto
+5. Click **Begin billing**; activa ambos productos en todos los repos existentes del proyecto
 6. Opcional: activa **"Automatically enable Advanced Security for new repositories"** para nuevos repos del proyecto
 
 ### Nivel 3 — Organización completa (todos los proyectos)
@@ -107,9 +107,9 @@ Organization Settings → Repositories
 
 Pasos:
 1. Ve a **Organization Settings → Repositories**
-2. Click **Enable all** — estimación de committers de toda la organización
+2. Click **Enable all**; estimación de committers de toda la organización
 3. Activa **Secret Protection** y/o **Code Security**
-4. Click **Begin billing** — activa en todos los repos de todos los proyectos
+4. Click **Begin billing**; activa en todos los repos de todos los proyectos
 5. Opcional: activa **"Automatically enable Advanced Security for new projects"**
 
 > ⚠️ Solo usuarios con permiso **"Advanced Security: manage settings"** pueden habilitar GHAS (es una acción facturable).
@@ -128,13 +128,13 @@ Para gestionar push protection por repositorio:
 Project Settings → Repos → Repositories → [repo] → Secret Protection options
 ```
 
-> El comportamiento es equivalente al de GHAS en GitHub.com — mismos patrones de detección (~200 tipos de tokens/secretos conocidos por GitHub).
+> El comportamiento es equivalente al de GHAS en GitHub.com: mismos patrones de detección (~200 tipos de tokens/secretos conocidos por GitHub).
 
 ---
 
 ## Parte 3 — Dependency Scanning
 
-Dependency scanning en GHAzDO es una **tarea de pipeline** — no es automático por defecto como en GitHub.com. Los resultados se agregan por repositorio.
+Dependency scanning en GHAzDO es una **tarea de pipeline**; no es automático por defecto como en GitHub.com. Los resultados se agregan por repositorio.
 
 ### Opción A — Default setup (rama por defecto únicamente)
 
@@ -249,7 +249,7 @@ Los status checks permiten **bloquear PRs** cuando se detectan vulnerabilidades 
 5. Selecciona **Required** como policy requirement
 6. Click **Save**
 
-> ⚠️ Los status checks solo aparecen en el menú después del **primer pipeline run exitoso** con las tareas de Advanced Security. No cambies el "authorized identity" ni el "iteration ID" en Advanced Options — esto impide que los status checks se publiquen.
+> ⚠️ Los status checks solo aparecen en el menú después del **primer pipeline run exitoso** con las tareas de Advanced Security. No cambies el "authorized identity" ni el "iteration ID" en Advanced Options: esto impide que los status checks se publiquen.
 
 ---
 

@@ -162,7 +162,7 @@ cd src/UsersApi
 dotnet add package System.Net.Http --version 4.3.0
 ```
 
-Esta versión de `System.Net.Http` tiene una vulnerabilidad conocida de alta severidad (GHSA-7jgj-8wvc-jh57 — Remote Code Execution vía redirección).
+Esta versión de `System.Net.Http` tiene una vulnerabilidad conocida de alta severidad (GHSA-7jgj-8wvc-jh57: Remote Code Execution vía redirección).
 
 ### Verificar que se agregó al `.csproj`
 
@@ -271,48 +271,27 @@ git push origin --delete demo/vulnerable-package
 
 ## Flujo completo de protección GHAS
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Developer Push                       │
-└──────────────────────────┬──────────────────────────────┘
-                           │
-              ┌────────────▼────────────┐
-              │    Push Protection       │
-              │  (Secret Scanning)       │
-              │  Bloquea si hay         │
-              │  secretos en el commit  │
-              └────────────┬────────────┘
-                           │
-              ┌────────────▼────────────┐
-              │    Pull Request          │
-              └────────┬────────────────┘
-                       │
-           ┌───────────┼───────────┐
-           │           │           │
-    ┌──────▼──┐  ┌─────▼───┐  ┌───▼──────┐
-    │ CodeQL  │  │  Dep.   │  │ Secret   │
-    │  Code   │  │ Review  │  │ Scanning │
-    │Scanning │  │         │  │  alerts  │
-    └──────┬──┘  └─────┬───┘  └───┬──────┘
-           │           │           │
-           └───────────┴───────────┘
-                       │
-              ┌────────▼────────┐
-              │  Merge a main   │
-              └────────┬────────┘
-                       │
-              ┌────────▼────────┐
-              │   Dependabot    │
-              │ Monitorea vulns │
-              │ en repo + PRs   │
-              │  automáticos    │
-              └─────────────────┘
+```mermaid
+flowchart TD
+    Push["👩‍💻 Developer Push"]
+    PP["🔴 Push Protection\nBloquea si hay secretos en el commit"]
+    PR["Pull Request"]
+    CS["🟢 CodeQL\nCode Scanning"]
+    DR["🟡 Dependency Review"]
+    SS["🔴 Secret Scanning alerts"]
+    Merge["✅ Merge a main"]
+    Dep["🔵 Dependabot\nMonitorea vulns en repo\nPRs automáticos"]
+    Push --> PP
+    PP --> PR
+    PR --> CS & DR & SS
+    CS & DR & SS --> Merge
+    Merge --> Dep
 ```
 
 ---
 
 ## Siguiente paso
 
-¡Bien hecho! Ya tienes el bloqueo preventivo funcionando en Pull Requests. Ahora viene el lab donde aprenderás a desplegar todo esto — Dependabot, Secret Scanning, Code Scanning y Dependency Review — en decenas de repositorios a la vez.
+¡Bien hecho! Ya tienes el bloqueo preventivo funcionando en Pull Requests. Ahora viene el lab donde aprenderás a desplegar todo esto (Dependabot, Secret Scanning, Code Scanning y Dependency Review) en decenas de repositorios a la vez.
 
 ➡️ **Siguiente:** [Lab 06 — GHAS a escala: Security Configurations y Global Settings](./06-ghas-at-scale.md)

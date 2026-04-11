@@ -8,7 +8,7 @@
 
 Una brecha de datos promedio cuesta **4.88 millones de dólares** (IBM, 2024). La mayoría empieza con algo pequeño: una API key expuesta en un commit, una dependencia con CVE sin parchear, o un parámetro SQL sin sanitizar.
 
-Este workshop te lleva de cero a hero en **GitHub Advanced Security (GHAS)**: el conjunto de herramientas que convierte tu repositorio en la primera línea de defensa. Aprenderás a detectar, bloquear y remediar vulnerabilidades directamente en el flujo de desarrollo — sin cambiar la forma en que trabaja tu equipo.
+Este workshop te lleva de cero a hero en **GitHub Advanced Security (GHAS)**: el conjunto de herramientas que convierte tu repositorio en la primera línea de defensa. Aprenderás a detectar, bloquear y remediar vulnerabilidades directamente en el flujo de desarrollo, sin cambiar la forma en que trabaja tu equipo.
 
 Usamos una **API .NET 10 intencionalmente rota** con SQL Injection, Path Traversal, SSRF, XXE, secretos hardcodeados y dependencias con CVEs reales. Todo para que veas GHAS en acción con vulnerabilidades de verdad, no ejemplos de juguete.
 
@@ -18,11 +18,11 @@ Usamos una **API .NET 10 intencionalmente rota** con SQL Injection, Path Travers
 
 | Feature | ¿Qué problema resuelve? | Lab |
 |---|---|---|
-| **Dependabot** | CVEs en dependencias ya en el repo — te dice qué parchear | [Lab 02](./docs/02-dependabot.md) |
+| **Dependabot** | CVEs en dependencias ya en el repo: te dice qué parchear | [Lab 02](./docs/02-dependabot.md) |
 | **Secret Scanning** | Secretos y tokens expuestos en commits ya mergeados | [Lab 03](./docs/03-secret-scanning.md) |
 | **Push Protection** | Bloquea el push antes de que el secreto entre al historial de Git | [Lab 03](./docs/03-secret-scanning.md) |
 | **Code Scanning (CodeQL)** | Vulnerabilidades en el flujo de datos: SQL Injection, SSRF, XXE... | [Lab 04](./docs/04-code-scanning.md) |
-| **Dependency Review** | CVEs en dependencias nuevas — bloquea el PR antes de mergear | [Lab 05](./docs/05-dependency-review.md) |
+| **Dependency Review** | CVEs en dependencias nuevas: bloquea el PR antes de mergear | [Lab 05](./docs/05-dependency-review.md) |
 | **GHAS a escala** | Desplegar todas estas herramientas en decenas de repos a la vez | [Lab 06](./docs/06-ghas-at-scale.md) |
 | **GHAS en Azure DevOps** | GHAzDO: lo mismo pero en Azure Repos y Azure Pipelines | [Lab 07](./docs/07-ghas-azure-devops.md) |
 | **Custom Patterns** | Detectar secretos internos de tu empresa que GitHub no conoce | [Guía](./docs/custom-patterns.md) |
@@ -201,7 +201,7 @@ Antes de empezar los labs, asegúrate de tener lo siguiente:
 
 ## Labs del Workshop
 
-> **Tiempo total estimado:** ~2h 45min — ideal para un workshop de día completo o para seguirlo a tu ritmo.
+> **Tiempo total estimado:** ~2h 45min, ideal para un workshop de día completo o para seguirlo a tu ritmo.
 
 | # | Lab | ¿Qué aprenderás? | ⏱ |
 |---|---|---|---|

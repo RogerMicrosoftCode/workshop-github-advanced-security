@@ -1,6 +1,6 @@
 # Lab 02 — Dependabot: Gestión de Dependencias Vulnerables
 
-Más del **70% de los proyectos de software usan componentes de terceros** con vulnerabilidades conocidas (Synk, 2023). Son CVEs públicos, visibles para cualquiera — incluyendo los atacantes. Dependabot es la herramienta de GitHub que monitoriza tus dependencias contra la base de datos de seguridad de GitHub (GitHub Advisory Database) y te avisa en cuanto aparece un CVE que te afecta.
+Más del **70% de los proyectos de software usan componentes de terceros** con vulnerabilidades conocidas (Synk, 2023). Son CVEs públicos, visibles para cualquiera, incluyendo los atacantes. Dependabot es la herramienta de GitHub que monitoriza tus dependencias contra la base de datos de seguridad de GitHub (GitHub Advisory Database) y te avisa en cuanto aparece un CVE que te afecta.
 
 En este lab vas a ver Dependabot en acción con los paquetes NuGet vulnerables que ya tiene la API demo.
 
@@ -18,8 +18,8 @@ En este lab vas a ver Dependabot en acción con los paquetes NuGet vulnerables q
 El **Dependency Graph** es el pilar de toda la seguridad de la cadena de suministro en GitHub. Sin él, Dependabot y Dependency Review no funcionan.
 
 > **📌 Concepto clave:** El Dependency Graph es un resumen de todos los manifiestos y lock files de un repositorio. GitHub lo construye **automáticamente** analizando esos archivos y muestra, para cada repositorio:
-> - **Dependencies** — los ecosistemas y paquetes de los que depende el proyecto
-> - **Dependents** — otros repositorios que dependen de este proyecto
+> - **Dependencies**: los ecosistemas y paquetes de los que depende el proyecto
+> - **Dependents**: otros repositorios que dependen de este proyecto
 >
 > Fuente: [About the dependency graph — GitHub Docs](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-the-dependency-graph)
 
@@ -42,11 +42,11 @@ Puedes ver el Dependency Graph en: **Repositorio → Insights → Dependency gra
 
 | Feature | Depende del Dependency Graph |
 |---|---|
-| **Dependabot Alerts** | ✅ Sí — necesita saber qué paquetes usa el repo |
+| **Dependabot Alerts** | ✅ Sí (necesita saber qué paquetes usa el repo) |
 | **Dependabot Security Updates** | ✅ Sí |
-| **Dependency Review** | ✅ Sí — compara el grafo antes y después del PR |
-| **SBOM export** | ✅ Sí — exporta el inventario completo de dependencias |
-| **Code Scanning (CodeQL)** | ❌ No — funciona a nivel de código fuente |
+| **Dependency Review** | ✅ Sí (compara el grafo antes y después del PR) |
+| **SBOM export** | ✅ Sí (exporta el inventario completo de dependencias) |
+| **Code Scanning (CodeQL)** | ❌ No (funciona a nivel de código fuente) |
 
 ### Disponibilidad
 

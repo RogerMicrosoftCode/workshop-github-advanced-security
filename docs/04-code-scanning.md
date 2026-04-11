@@ -2,9 +2,9 @@
 
 Dependabot cuida las dependencias. Secret Scanning cuida los secretos. Pero, ¿quién vigila el código que tú mismo escribes?
 
-**CodeQL** es el motor de análisis estático de GitHub. No busca patrones de texto ni firma de malware — modela el programa como una base de datos y ejecuta queries sobre el **flujo real de los datos**: desde el input del usuario hasta la query SQL, la ruta de archivo o la petición HTTP. Si el dato no pasa por una sanitización adecuada, CodeQL creará una alerta.
+**CodeQL** es el motor de análisis estático de GitHub. No busca patrones de texto ni firma de malware: modela el programa como una base de datos y ejecuta queries sobre el **flujo real de los datos**: desde el input del usuario hasta la query SQL, la ruta de archivo o la petición HTTP. Si el dato no pasa por una sanitización adecuada, CodeQL creará una alerta.
 
-En este lab ejecutarás CodeQL sobre la API demo y verás cómo detecta SQL Injection, SSRF, Path Traversal, XXE y deserialización insegura — las mismas vulnerabilidades que cualquier equipo puede introducir sin darse cuenta.
+En este lab ejecutarás CodeQL sobre la API demo y verás cómo detecta SQL Injection, SSRF, Path Traversal, XXE y deserialización insegura, las mismas vulnerabilidades que cualquier equipo puede introducir sin darse cuenta.
 
 ## ¿Qué vas a aprender en este lab?
 
@@ -17,16 +17,15 @@ En este lab ejecutarás CodeQL sobre la API demo y verás cómo detecta SQL Inje
 
 ## Contexto: ¿Cómo funciona CodeQL?
 
-CodeQL no busca patrones de texto — analiza el **flujo de datos** a través del código:
+CodeQL no busca patrones de texto: analiza el **flujo de datos** a través del código:
 
-```
-Source (dato controlado por el atacante)
-    ↓
-Transformaciones intermedias (asignaciones, concatenaciones)
-    ↓
-Sink (operación sensible: query SQL, lectura de archivo, request HTTP)
-    ↓
-¿El dato llega al sink sin sanitizar? → ALERTA
+```mermaid
+flowchart TD
+    A["🔓 Source\ndato controlado por el atacante"]
+    B["Transformaciones intermedias\nasignaciones \u00b7 concatenaciones"]
+    C["⚠️ Sink\nquery SQL \u00b7 lectura de archivo \u00b7 request HTTP"]
+    D["❌ ALERTA\nel dato llega al sink sin sanitizar"]
+    A --> B --> C --> D
 ```
 
 Este enfoque se llama **taint analysis** y es superior a los linters tradicionales porque detecta vulnerabilidades aunque el código esté distribuido en múltiples métodos y archivos.
@@ -41,7 +40,7 @@ Cuando habilitas Code Scanning con **Advanced Setup** desde la UI de GitHub
 (Settings → Code Security → Code scanning → Advanced), GitHub genera automáticamente
 un archivo llamado `codeql.yml` en `.github/workflows/`.
 
-Este nombre es el estándar del Advanced Setup — a diferencia del Default Setup
+Este nombre es el estándar del Advanced Setup: a diferencia del Default Setup
 (que no genera archivo de workflow visible), el Advanced Setup te entrega el YAML
 completo para que lo personalices.
 
@@ -104,7 +103,7 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 
 > **📌 Concepto clave:** `security-extended` incluye **todas las queries del suite `default` más queries adicionales que detectan issues de menor severidad**. Estas queries adicionales tienen ligeramente menor precisión, por lo que pueden generar más falsos positivos que `default`.
 >
-> En el examen, las otras opciones de respuesta suelen ser **rutas a language packs** (ej. `codeql/csharp-queries`) — los language packs contienen las queries individuales, pero no son query suites en sí mismos. Solo `security-extended` (y `default`) son query suites built-in con nombre corto reconocido por GHAS.
+> En el examen, las otras opciones de respuesta suelen ser **rutas a language packs** (ej. `codeql/csharp-queries`): los language packs contienen las queries individuales, pero no son query suites en sí mismos. Solo `security-extended` (y `default`) son query suites built-in con nombre corto reconocido por GHAS.
 >
 > **Comparación directa:**
 > | Suite | Queries incluidas | Precisión | Cuándo usarlo |
@@ -137,18 +136,18 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
     packs: codeql/csharp-queries  # pack, no suite
 ```
 
-> ⚠️ `codeql/csharp-queries` es un **language pack** — contiene queries individuales pero no es una query suite. En preguntas del examen, esta opción es un distractor incorrecto cuando la pregunta pide la suite que detecta issues de menor severidad.
+> ⚠️ `codeql/csharp-queries` es un **language pack**: contiene queries individuales pero no es una query suite. En preguntas del examen, esta opción es un distractor incorrecto cuando la pregunta pide la suite que detecta issues de menor severidad.
 
 ### Extensiones de archivo en CodeQL
 
-> **📌 Concepto clave (GH-500 Q34):** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub — no es necesario escribir la ruta completa.
+> **📌 Concepto clave (GH-500 Q34):** Las definiciones de query suites se almacenan en archivos YAML con extensión **`.qls`**. Al referenciar `security-extended` en el workflow, se usa el nombre corto del archivo `.qls` interno de GitHub, no es necesario escribir la ruta completa.
 >
 > | Extensión | Tipo | Descripción |
 > |---|---|---|
 > | `.qls` | **Query suite** | Define una colección de queries (YAML). Los nombres cortos `default`, `security-extended` son aliases de archivos `.qls` internos |
-> | `.ql` | **Query individual** | Una sola consulta CodeQL — detecta un tipo de vulnerabilidad específico |
+> | `.ql` | **Query individual** | Una sola consulta CodeQL: detecta un tipo de vulnerabilidad específico |
 > | `.qll` | **Librería** | Código reutilizable importado por archivos `.ql` |
-> | `.yml` | **Workflow** | Configura GitHub Actions — no tiene relación con query suites |
+> | `.yml` | **Workflow** | Configura GitHub Actions, sin relación con query suites |
 
 ### Opciones para agregar queries adicionales
 
@@ -159,7 +158,7 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 > | **Packs** | `packs:` | Instala uno o más CodeQL query packs y ejecuta su suite por defecto. Formato: `scope/pack-name@version` |
 > | **Queries** | `queries:` | Apunta a un archivo `.ql`, un directorio con múltiples `.ql`, un archivo `.qls`, o cualquier combinación |
 >
-> `github/codeql` es un nombre de repositorio, **no** es un parámetro de configuración válido. `scope` es la cuenta/org que publicó un pack — tampoco es un parámetro.
+> `github/codeql` es un nombre de repositorio, **no** es un parámetro de configuración válido. `scope` es la cuenta/org que publicó un pack, tampoco es un parámetro.
 >
 > Se pueden usar `packs` y `queries` **juntos** en el mismo workflow.
 
@@ -383,7 +382,7 @@ public UserData? DeserializeUserData(string json)
 3. Cada alerta muestra:
    - Archivo y línea exacta
    - Descripción del problema
-   - El **data flow path** — cómo el dato viaja desde el source hasta el sink
+   - El **data flow path**: cómo el dato viaja desde el source hasta el sink
    - Sugerencia de fix
    - CWE asociado
 
@@ -401,7 +400,7 @@ Rule: sql-injection, path-injection, ssrf
 
 ### ¿Qué es SARIF?
 
-**SARIF** (Static Analysis Results Interchange Format) es un estándar JSON abierto (OASIS) diseñado para representar los resultados de herramientas de análisis estático de código. GitHub lo adoptó como el formato universal para Code Scanning — cualquier herramienta que genere un archivo `.sarif` puede publicar sus alertas en Security → Code scanning.
+**SARIF** (Static Analysis Results Interchange Format) es un estándar JSON abierto (OASIS) diseñado para representar los resultados de herramientas de análisis estático de código. GitHub lo adoptó como el formato universal para Code Scanning; cualquier herramienta que genere un archivo `.sarif` puede publicar sus alertas en Security → Code scanning.
 
 ```
 Herramienta de análisis          GitHub Code Scanning
@@ -413,12 +412,12 @@ Herramienta de análisis          GitHub Code Scanning
 
 > **📌 Concepto clave:** Cuando usas una herramienta **SARIF-compatible de tercero** (no CodeQL) en GitHub Actions, **debes agregar manualmente un paso final** que suba el archivo `.sarif` a GitHub con `github/codeql-action/upload-sarif`. Sin ese paso, el archivo se genera en el runner pero GitHub nunca recibe los resultados.
 >
-> En contraste, `github/codeql-action/analyze` (usado por CodeQL) **sube automáticamente** — el upload está integrado en la acción.
+> En contraste, `github/codeql-action/analyze` (usado por CodeQL) **sube automáticamente**: el upload está integrado en la acción.
 
 | Escenario | Upload automático | Paso manual requerido |
 |---|---|---|
-| `github/codeql-action/analyze` (CodeQL nativo) | ✅ Sí — integrado en la acción | No |
-| Herramienta SARIF de tercero (Semgrep, Snyk, etc.) | ❌ No | ✅ Sí — `upload-sarif` |
+| `github/codeql-action/analyze` (CodeQL nativo) | ✅ Sí (integrado en la acción) | No |
+| Herramienta SARIF de tercero (Semgrep, Snyk, etc.) | ❌ No | ✅ Sí (`upload-sarif`) |
 
 ### Ejemplo: herramienta SARIF de tercero
 
@@ -479,7 +478,7 @@ jobs:
 
 ### Permiso requerido
 
-Para subir resultados SARIF, el workflow necesita el permiso `security-events: write` — tanto para CodeQL como para herramientas de terceros:
+Para subir resultados SARIF, el workflow necesita el permiso `security-events: write`, tanto para CodeQL como para herramientas de terceros:
 
 ```yaml
 permissions:

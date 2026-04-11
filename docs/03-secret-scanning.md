@@ -1,6 +1,6 @@
 # Lab 03 — Secret Scanning: Detección de Secretos Expuestos
 
-Una API key de Stripe en un commit. Un token de GitHub en un script de CI. Una contraseña en un `appsettings.json` que subió alguien en 2021 y que nadié notó. Los secretos expuestos en repositorios son uno de los vectores de ataque más comunes — y más evitables.
+Una API key de Stripe en un commit. Un token de GitHub en un script de CI. Una contraseña en un `appsettings.json` que subió alguien en 2021 y que nadié notó. Los secretos expuestos en repositorios son uno de los vectores de ataque más comunes, y también de los más evitables.
 
 **Secret Scanning** analiza cada commit buscando patrones que coincidan con tokens y credenciales conocidos. **Push Protection** va un paso más allá: bloquea el push antes de que el secreto entre al historial de Git. En este lab activarás ambas funcionalidades y verás cómo detectan exactamente los secretos que tiene la API demo.
 
@@ -75,15 +75,15 @@ Para cada alerta verás:
 
 | Badge en la alerta | Estado | Significado |
 |---|---|---|
-| `Active` | Verificado activo | El proveedor confirmó que el secreto es válido — **atender de inmediato** |
-| `Inactive` | Verificado inactivo | El secreto fue revocado — verificar que no hubo acceso no autorizado |
+| `Active` | Verificado activo | El proveedor confirmó que el secreto es válido; **atender de inmediato** |
+| `Inactive` | Verificado inactivo | El secreto fue revocado; verificar que no hubo acceso no autorizado |
 | `Unknown` | No verificable | GitHub no puede validar este tipo de secreto con el proveedor |
 
 ### Cómo habilitarlo
 
-**GitHub tokens** — activo por defecto en todos los repos con Secret Scanning habilitado, sin configuración adicional.
+**GitHub tokens**: activo por defecto en todos los repos con Secret Scanning habilitado, sin configuración adicional.
 
-**Partner patterns** (AWS, Stripe, SendGrid, Google, etc.) — requiere habilitación explícita:
+**Partner patterns** (AWS, Stripe, SendGrid, Google, etc.): requiere habilitación explícita:
 
 ```
 Settings → Code security → Secret scanning → Validity checks → Enable
@@ -108,13 +108,13 @@ Una vez habilitado, en cada alerta aparece el botón **"Verify secret"** para la
 | `AKIA...` en `AuthService.cs` | AWS Access Key | ✅ Con validity checks habilitado |
 | `pk_live_...` en `appsettings.json` | Stripe Live Key | ✅ Con validity checks habilitado |
 | `SG....` en `appsettings.json` | SendGrid API Key | ✅ Con validity checks habilitado |
-| `JWT_SECRET` en `appsettings.json` | Custom JWT secret | ❌ `Unknown` — sin endpoint de validación |
-| Azure Storage connection string | Azure Storage | ❌ `Unknown` — no soportado actualmente |
+| `JWT_SECRET` en `appsettings.json` | Custom JWT secret | ❌ `Unknown` (sin endpoint de validación) |
+| Azure Storage connection string | Azure Storage | ❌ `Unknown` (no soportado actualmente) |
 
 ### Otras features de evaluación de alertas
 
 - **GitHub token metadata** *(preview)*: para tokens activos muestra owner, fecha de creación, último uso y si tiene acceso a organizaciones.
-- **Extended metadata** *(preview)*: para OpenAI API, Google OAuth y Slack — muestra owner ID, email, nombre de org y fecha de expiración.
+- **Extended metadata** *(preview)*: para OpenAI API, Google OAuth y Slack: muestra owner ID, email, nombre de org y fecha de expiración.
 - **Alert labels**: etiquetas adicionales en la alerta:
   - `public leak` → el mismo secreto fue encontrado en código público
   - `multi-repo` → el secreto existe en múltiples repos de la organización
@@ -123,17 +123,17 @@ Una vez habilitado, en cada alerta aparece el botón **"Verify secret"** para la
 
 ## Paso 3 — Entender el flujo de detección
 
-```
-Commit con secreto
-        ↓
-GitHub analiza el diff con ~200 patrones integrados
-        ↓
-¿Coincidencia?
-        ↓
-Alerta en Security → Secret scanning
-        ↓
-(Si el proveedor participa en el programa de notificación)
-GitHub notifica al proveedor → el token puede ser revocado automáticamente
+```mermaid
+flowchart TD
+    A["Commit con secreto"]
+    B["GitHub analiza el diff\ncon ~200 patrones integrados"]
+    C{"¿Coincidencia?"}
+    D["Alerta en Security\nSecret scanning alerts"]
+    E["GitHub notifica al proveedor\nel token puede ser revocado automáticamente"]
+    OK["✅ Sin alertas"]
+    A --> B --> C
+    C -->|Sí| D --> E
+    C -->|No| OK
 ```
 
 ### Proveedores con revocación automática (selección)
@@ -331,13 +331,13 @@ Soporta glob patterns: `*`, `**`, `?`.
 
 1. Agrega un secreto de prueba en un archivo dentro de la ruta excluida
 2. Haz commit y push
-3. Ve a **Security → Secret scanning** — no debe aparecer ninguna alerta nueva para ese archivo
+3. Ve a **Security → Secret scanning**; no debe aparecer ninguna alerta nueva para ese archivo
 
 ### Cuándo NO usar `paths-ignore`
 
 - Nunca excluir rutas de producción (`src/`, `config/`, `app/`)
 - Documentar siempre en un comentario del archivo por qué se excluye cada ruta
-- Revisar el archivo periódicamente — las exclusiones antiguas pueden ocultar problemas reales
+- Revisar el archivo periódicamente; las exclusiones antiguas pueden ocultar problemas reales
 
 ---
 
@@ -346,9 +346,9 @@ Soporta glob patterns: `*`, `**`, `?`.
 Para cada alerta de Secret Scanning debes:
 
 1. **Revocar el secreto** en el proveedor (aunque GitHub lo haga automáticamente, confírmalo)
-2. **Rotar el secreto** — generar uno nuevo y actualizar los sistemas que lo usan
+2. **Rotar el secreto**: generar uno nuevo y actualizar los sistemas que lo usan
 3. **Cerrar la alerta** en GitHub marcándola como resuelta
-4. **Remediar el código** — eliminar el secreto hardcodeado y moverlo a:
+4. **Remediar el código**: eliminar el secreto hardcodeado y moverlo a:
    - Variables de entorno
    - Azure Key Vault / AWS Secrets Manager
    - GitHub Secrets (para CI/CD)
@@ -380,6 +380,6 @@ Para cada alerta de Secret Scanning debes:
 
 ## Siguiente paso
 
-¡Secretos identificados y Push Protection activo! Ahora vamos a por las vulnerabilidades en el propio código de la aplicación — SQL Injection, SSRF, XXE... las que detecta CodeQL.
+¡Secretos identificados y Push Protection activo! Ahora vamos a por las vulnerabilidades en el propio código de la aplicación: SQL Injection, SSRF, XXE... las que detecta CodeQL.
 
 ➡️ **Siguiente:** [Lab 04 — Code Scanning: análisis estático con CodeQL](./04-code-scanning.md)

@@ -42,9 +42,9 @@ Una Security Configuration agrupa settings de habilitación para:
 - **Private vulnerability reporting**
 
 Para cada feature puede configurarse tres estados:
-- **Enabled** — se habilita en los repos donde se aplique la configuración
-- **Disabled** — se deshabilita
-- **Not set** — se deja el estado actual del repo (no se sobreescribe)
+- **Enabled**: se habilita en los repos donde se aplique la configuración
+- **Disabled**: se deshabilita
+- **Not set**: se deja el estado actual del repo (no se sobreescribe)
 
 ### Paso 1 — Crear una Security Configuration personalizada
 
@@ -78,7 +78,7 @@ GitHub UI → Tu avatar (esquina superior derecha) → Organizations
 
 #### Si usas GitHub Secret Protection + GitHub Code Security (modelo nuevo):
 
-El formulario separa las dos secciones — configura cada una individualmente. Las opciones son equivalentes a las anteriores.
+El formulario separa las dos secciones; configura cada una individualmente. Las opciones son equivalentes a las anteriores.
 
 4. En la sección **Policy** (opcional):
    - **Use as default for newly created repositories** → `All repositories` para aplicar automáticamente a repos nuevos
@@ -118,7 +118,7 @@ Los Global Settings se configuran en:
 Org Settings → Advanced Security → Global settings
 ```
 
-Son settings **a nivel de organización** — no controlan si una feature está ON/OFF (eso lo hacen las Security Configurations), sino **cómo se comporta** la feature.
+Son settings **a nivel de organización**; no controlan si una feature está ON/OFF (eso lo hacen las Security Configurations), sino **cómo se comporta** la feature.
 
 ### Global Settings para Dependabot
 
@@ -147,7 +147,7 @@ Global settings → Dependabot → Runner type → Edit runner type
 → Selecciona "Labeled runner" → Introduce el label de tus runners
 ```
 
-> ⚠️ Los labeled runners no funcionan para repositorios **públicos** — Dependabot siempre usa GitHub-hosted runners en repos públicos por razones de seguridad.
+> ⚠️ Los labeled runners no funcionan para repositorios **públicos**: Dependabot siempre usa GitHub-hosted runners en repos públicos por razones de seguridad.
 
 #### Acceso a repositorios privados
 
@@ -264,19 +264,24 @@ GitHub UI → Tu organización → Security (tab en la parte superior)
 
 ---
 
-## Resumen — Jerarquía de configuración de GHAS
+## Resumen: Jerarquía de configuración de GHAS
 
-```
-Enterprise
-└── Organization
-    ├── Security Configurations  ←── ON/OFF de features por repositorio
-    │   ├── GitHub-managed (GitHub Recommended)
-    │   └── Custom configurations (las que creamos en este lab)
-    ├── Global Settings          ←── Comportamiento de features a nivel org
-    │   ├── Dependabot settings
-    │   ├── Code scanning settings
-    │   └── Secret scanning settings
-    └── Repositories             ←── Heredan la configuración (si no hay enforce)
+```mermaid
+graph TD
+    E["🏢 Enterprise"]
+    O["🏷️ Organization"]
+    SC["Security Configurations\nON/OFF de features por repositorio"]
+    GH["GitHub-managed\nGitHub Recommended"]
+    CC["Custom configurations\nlas que creamos en este lab"]
+    GS["Global Settings\nComportamiento de features a nivel org"]
+    DS["Dependabot settings"]
+    CS["Code scanning settings"]
+    SS["Secret scanning settings"]
+    R["Repositories\nHeredan la configuración (si no hay enforce)"]
+    E --> O
+    O --> SC & GS & R
+    SC --> GH & CC
+    GS --> DS & CS & SS
 ```
 
 | Nivel | Herramienta | ¿Qué controla? | ¿Quién puede cambiarla? |

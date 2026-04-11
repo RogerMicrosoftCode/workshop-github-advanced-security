@@ -1,8 +1,8 @@
 # Secret Scanning — Custom Patterns
 
-GitHub Secret Scanning incluye ~200 patrones integrados para detectar secretos conocidos (GitHub PATs, AWS keys, Stripe keys...). Pero ¿y los secretos que son specíficos de **tu empresa**? Tokens de API internos, identificadores de cuentas de servicio, conexiones a sistemas propietarios — esos GitHub no los conoce.
+GitHub Secret Scanning incluye ~200 patrones integrados para detectar secretos conocidos (GitHub PATs, AWS keys, Stripe keys...). Pero ¿y los secretos que son specíficos de **tu empresa**? Tokens de API internos, identificadores de cuentas de servicio, conexiones a sistemas propietarios. Esos GitHub no los conoce.
 
-**Los Custom Patterns** te permiten definir tus propios patrones con expresiones regulares. En esta guía crearás patrones para los secretos de formato interno que tiene la API demo — exactamente el tipo de secretos que un equipo de seguridad real necesitaría añadir.
+**Los Custom Patterns** te permiten definir tus propios patrones con expresiones regulares. En esta guía crearás patrones para los secretos de formato interno que tiene la API demo, exactamente el tipo de secretos que un equipo de seguridad real necesitaría añadir.
 
 ## ¿Qué cubre esta guía?
 
@@ -45,9 +45,9 @@ Settings → Security → Secret scanning → Custom patterns → New pattern
 
 | Campo | ¿Es requerido? | Descripción |
 |---|---|---|
-| **Pattern name** | ✅ Sí | Nombre descriptivo — aparece en la alerta |
+| **Pattern name** | ✅ Sí | Nombre descriptivo (aparece en la alerta) |
 | **Secret format** | ✅ Sí | Regex principal que identifica el secreto |
-| **Before secret** | ❌ Opcional | Regex de contexto ANTES del secreto — reduce falsos positivos |
+| **Before secret** | ❌ Opcional | Regex de contexto ANTES del secreto (reduce falsos positivos) |
 | **After secret** | ❌ Opcional | Regex de contexto DESPUÉS del secreto |
 | **Additional match** | ❌ Opcional | Regex adicional que también debe coincidir en el mismo archivo |
 
@@ -59,8 +59,8 @@ Settings → Security → Secret scanning → Custom patterns → New pattern
   Esto descarta `["']?`, `\s*`, `.*` y cualquier construcción con `?` o `*` que pueda coincidir con cero caracteres.
 - Usa cuantificadores acotados: `{1,5}` en lugar de `*`, `{1,1}` en lugar de `?`.
 - Los valores por defecto de GitHub son seguros y funcionan bien en la mayoría de casos:
-  - **Before secret (default):** `\A|[^0-9A-Za-z]` — inicio de línea O un carácter no alfanumérico
-  - **After secret (default):** `\z|[^0-9A-Za-z]` — fin de línea O un carácter no alfanumérico
+  - **Before secret (default):** `\A|[^0-9A-Za-z]`: inicio de línea O un carácter no alfanumérico
+  - **After secret (default):** `\z|[^0-9A-Za-z]`: fin de línea O un carácter no alfanumérico
 - Si no necesitas contexto específico, **deja los campos Before/After vacíos** para usar los defaults.
 
 ---
@@ -82,8 +82,8 @@ Configuración del custom pattern:
 |---|---|
 | Pattern name | `MYCO Internal API Key` |
 | Secret format | `MYCO-[A-Z]{3}-[0-9]{4}-[a-f0-9]{8}` |
-| Before secret | *(dejar vacío — usa el default `\A\|[^0-9A-Za-z]`)* |
-| After secret | *(dejar vacío — usa el default `\z\|[^0-9A-Za-z]`)* |
+| Before secret | *(dejar vacío; usa el default `\A\|[^0-9A-Za-z]`)* |
+| After secret | *(dejar vacío; usa el default `\z\|[^0-9A-Za-z]`)* |
 | Additional match | `MYCO` |
 
 > El Secret format es suficientemente específico. Los campos Before/After se dejan vacíos para evitar errores de Hyperscan con cuantificadores de longitud cero.
@@ -148,21 +148,18 @@ Configuración del custom pattern:
 
 ## Flujo completo de detección
 
-```
-Push al repositorio
-        ↓
-GitHub Secret Scanning ejecuta:
-  • Patrones integrados (~200 providers conocidos)
-  • Custom Patterns definidos en la UI
-        ↓
-¿Coincidencia encontrada?
-        ↓
-Alerta en: Security → Secret scanning alerts
-  • Muestra el archivo, línea y tipo de secreto
-  • Notifica al owner del repo por email
-        ↓ (si Push Protection está activado)
-❌ El push es BLOQUEADO antes de llegar al repo
-   El desarrollador debe eliminar el secreto para poder pushear
+```mermaid
+flowchart TD
+    A["Push al repositorio"]
+    B["GitHub Secret Scanning ejecuta:\n• Patrones integrados (~200 providers)\n• Custom Patterns definidos en la UI"]
+    C{"¿Coincidencia\nencontrada?"}
+    D["Alerta en Security \u2192 Secret scanning alerts\nArchivo, línea y tipo de secreto\nNotificación al owner por email"]
+    E["❌ Push BLOQUEADO\nEl desarrollador debe eliminar\nel secreto para poder pushear"]
+    OK["✅ Push aceptado"]
+    A --> B --> C
+    C -->|Sí| D
+    C -->|No| OK
+    D -->|Push Protection activo| E
 ```
 
 ---
@@ -208,7 +205,7 @@ Settings → Security → Secret scanning → Push protection → Enable
 Con Push Protection activado:
 - El push es **bloqueado automáticamente** si contiene un secreto que coincida con el patrón
 - El desarrollador ve el error en su terminal y debe remover el secreto
-- El secreto **nunca llega al historial de Git** — es la forma más segura de prevención
+- El secreto **nunca llega al historial de Git**: es la forma más segura de prevención
 
 ---
 
