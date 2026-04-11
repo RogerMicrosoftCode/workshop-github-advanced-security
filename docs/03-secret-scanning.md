@@ -1,6 +1,10 @@
 # Lab 03 — Secret Scanning: Detección de Secretos Expuestos
 
-## Objetivos
+Una API key de Stripe en un commit. Un token de GitHub en un script de CI. Una contraseña en un `appsettings.json` que subió alguien en 2021 y que nadié notó. Los secretos expuestos en repositorios son uno de los vectores de ataque más comunes — y más evitables.
+
+**Secret Scanning** analiza cada commit buscando patrones que coincidan con tokens y credenciales conocidos. **Push Protection** va un paso más allá: bloquea el push antes de que el secreto entre al historial de Git. En este lab activarás ambas funcionalidades y verás cómo detectan exactamente los secretos que tiene la API demo.
+
+## ¿Qué vas a aprender en este lab?
 
 - Identificar los tipos de secretos que GitHub detecta por defecto
 - Revisar las alertas de Secret Scanning generadas por el proyecto
@@ -376,4 +380,6 @@ Para cada alerta de Secret Scanning debes:
 
 ## Siguiente paso
 
-➡️ [Lab 04 — Code Scanning: análisis estático con CodeQL](./04-code-scanning.md)
+¡Secretos identificados y Push Protection activo! Ahora vamos a por las vulnerabilidades en el propio código de la aplicación — SQL Injection, SSRF, XXE... las que detecta CodeQL.
+
+➡️ **Siguiente:** [Lab 04 — Code Scanning: análisis estático con CodeQL](./04-code-scanning.md)

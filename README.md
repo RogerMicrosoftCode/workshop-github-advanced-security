@@ -1,61 +1,141 @@
-# Workshop: GitHub Advanced Security (GHAS)
+# GitHub Advanced Security — Workshop Práctico
 
 > **⚠️ ADVERTENCIA:** Este repositorio contiene código **intencionalmente vulnerable** con fines educativos. No usar en producción. Ver [SECURITY.md](./SECURITY.md) para más detalles.
 
 ---
 
-## ¿Qué es este workshop?
+## ¿De qué va este workshop?
 
-Una demo práctica de las funcionalidades de **GitHub Advanced Security** usando una API .NET 10 con vulnerabilidades reales y configuraciones paso a paso.
+Una brecha de datos promedio cuesta **4.88 millones de dólares** (IBM, 2024). La mayoría empieza con algo pequeño: una API key expuesta en un commit, una dependencia con CVE sin parchear, o un parámetro SQL sin sanitizar.
 
-Al completar el workshop entenderás cómo configurar y demostrar:
+Este workshop te lleva de cero a hero en **GitHub Advanced Security (GHAS)**: el conjunto de herramientas que convierte tu repositorio en la primera línea de defensa. Aprenderás a detectar, bloquear y remediar vulnerabilidades directamente en el flujo de desarrollo — sin cambiar la forma en que trabaja tu equipo.
 
-| Feature | ¿Qué detecta? | Lab |
-|---|---|---|
-| **Dependabot** | CVEs en dependencias existentes | [Lab 02](./docs/02-dependabot.md) |
-| **Secret Scanning** | Secretos y tokens expuestos en el código | [Lab 03](./docs/03-secret-scanning.md) |
-| **Push Protection** | Bloquea commits con secretos antes del push | [Lab 03](./docs/03-secret-scanning.md) |
-| **Code Scanning (CodeQL)** | Vulnerabilidades en el flujo de datos del código | [Lab 04](./docs/04-code-scanning.md) |
-| **Dependency Review** | CVEs en dependencias nuevas en cada PR | [Lab 05](./docs/05-dependency-review.md) |
-| **GHAS a escala** | Security Configurations y Global Settings en la org | [Lab 06](./docs/06-ghas-at-scale.md) |
-| **GHAS en Azure DevOps** | GHAzDO: habilitar, pipelines, status checks | [Lab 07](./docs/07-ghas-azure-devops.md) |
-| **Custom Patterns** | Secretos de formato interno no conocidos por GitHub | [Guía](./docs/custom-patterns.md) |
+Usamos una **API .NET 10 intencionalmente rota** con SQL Injection, Path Traversal, SSRF, XXE, secretos hardcodeados y dependencias con CVEs reales. Todo para que veas GHAS en acción con vulnerabilidades de verdad, no ejemplos de juguete.
 
 ---
 
-## Arquitectura del proyecto
+## Lo que vas a aprender
+
+| Feature | ¿Qué problema resuelve? | Lab |
+|---|---|---|
+| **Dependabot** | CVEs en dependencias ya en el repo — te dice qué parchear | [Lab 02](./docs/02-dependabot.md) |
+| **Secret Scanning** | Secretos y tokens expuestos en commits ya mergeados | [Lab 03](./docs/03-secret-scanning.md) |
+| **Push Protection** | Bloquea el push antes de que el secreto entre al historial de Git | [Lab 03](./docs/03-secret-scanning.md) |
+| **Code Scanning (CodeQL)** | Vulnerabilidades en el flujo de datos: SQL Injection, SSRF, XXE... | [Lab 04](./docs/04-code-scanning.md) |
+| **Dependency Review** | CVEs en dependencias nuevas — bloquea el PR antes de mergear | [Lab 05](./docs/05-dependency-review.md) |
+| **GHAS a escala** | Desplegar todas estas herramientas en decenas de repos a la vez | [Lab 06](./docs/06-ghas-at-scale.md) |
+| **GHAS en Azure DevOps** | GHAzDO: lo mismo pero en Azure Repos y Azure Pipelines | [Lab 07](./docs/07-ghas-azure-devops.md) |
+| **Custom Patterns** | Detectar secretos internos de tu empresa que GitHub no conoce | [Guía](./docs/custom-patterns.md) |
+
+---
+
+## Defensa en profundidad — cómo encajan todas las piezas
+
+GHAS no es una sola herramienta: es una **cadena de controles** que protege el código en cada etapa del ciclo de vida. Este diagrama muestra cuándo actúa cada feature:
+
+```mermaid
+flowchart TD
+    Dev(["👩‍💻 Developer\ngit push / git commit"])
+
+    subgraph Before["ANTES del push"]
+        PP["🔴 Push Protection\nBloquea si hay secretos\nen el commit"]
+    end
+
+    subgraph PR["EN EL PULL REQUEST"]
+        DR["🟡 Dependency Review\nBloquea si la PR introduces\nuna dependencia con CVE"]
+        CS["🟢 Code Scanning — CodeQL\nDetecta SQL Injection, SSRF,\nPath Traversal, XXE..."]
+        SS["🔴 Secret Scanning\nAlerta por secretos en\nel diff del PR"]
+    end
+
+    subgraph Repo["EN EL REPOSITORIO (ongoing)"]
+        DA["🔵 Dependabot Alerts\nMonitorea CVEs en\ndependencias existentes"]
+        DSU["🔵 Security Updates\nPRs automáticos para\nparchear CVEs"]
+    end
+
+    Dev --> PP
+    PP -->|"✅ sin secretos"| PR
+    PP -->|"❌ secreto detectado\nPush rechazado"| Dev
+    PR --> Merge(["✅ Merge a main"])
+    Merge --> Repo
+
+    style Before fill:#fff0f0,stroke:#ff6b6b
+    style PR fill:#fffbf0,stroke:#ffd93d
+    style Repo fill:#f0f8ff,stroke:#4d96ff
+    style PP fill:#ff6b6b,color:#fff
+    style DR fill:#ffd93d,color:#333
+    style CS fill:#6bcb77,color:#fff
+    style SS fill:#ff6b6b,color:#fff
+    style DA fill:#4d96ff,color:#fff
+    style DSU fill:#4d96ff,color:#fff
+    style Merge fill:#6bcb77,color:#fff
+```
+
+---
+
+## Ruta de aprendizaje
+
+Los labs están diseñados para seguirse en orden, pero cada uno es independiente si ya tienes experiencia con GHAS:
+
+```mermaid
+graph LR
+    L01["⚙️ Lab 01\nSetup del entorno\n15 min"]
+    L02["📦 Lab 02\nDependabot\n20 min"]
+    L03["🔑 Lab 03\nSecret Scanning\n+ Push Protection\n25 min"]
+    L04["🔍 Lab 04\nCode Scanning\nCodeQL\n30 min"]
+    L05["🔒 Lab 05\nDependency Review\n20 min"]
+    L06["🏢 Lab 06\nGHAS a escala\n20 min"]
+    L07["☁️ Lab 07\nAzure DevOps\n25 min"]
+    CP["✏️ Custom Patterns\nopcional · 20 min"]
+
+    L01 --> L02 & L03 & L04 & L05
+    L02 & L03 & L04 & L05 --> L06
+    L06 --> L07
+    L03 -.-> CP
+
+    style L01 fill:#e8f4fd,stroke:#4d96ff
+    style L06 fill:#f0f0ff,stroke:#9b59b6
+    style L07 fill:#e8fff0,stroke:#27ae60
+    style CP fill:#fffbf0,stroke:#f39c12,stroke-dasharray:5
+```
+
+---
+
+## Arquitectura del proyecto demo
+
+La aplicación es una **API REST .NET 10** con vulnerabilidades rastreables desde el endpoint hasta el código fuente. Cada vulnerabilidad tiene su CVE o CWE correspondiente y es detectable por una feature específica de GHAS.
 
 ```
-ghas/
+workshop-github-advanced-security/
 ├── src/
-│   └── UsersApi/               # .NET 10 Minimal API
-│       ├── Program.cs          # Entry point — endpoints y DI
-│       ├── Models/
-│       │   └── User.cs         # Entidad User
-│       ├── Data/
-│       │   └── AppDbContext.cs # EF Core InMemory + seed data
+│   └── UsersApi/                       # .NET 10 Minimal API
+│       ├── Program.cs                  # Entry point — endpoints y DI
+│       ├── Models/User.cs              # Entidad User
+│       ├── Data/AppDbContext.cs        # EF Core InMemory + seed data
 │       ├── Services/
-│       │   ├── AuthService.cs          # ❌ SQL Injection, hardcoded secrets
-│       │   ├── ReportService.cs        # ❌ Path Traversal, SSRF, XXE
-│       │   └── CustomPatternDemoService.cs  # ❌ Secretos formato interno
-│       ├── appsettings.json    # ❌ API keys hardcodeadas
-│       └── UsersApi.csproj     # ❌ Paquetes NuGet vulnerables
+│       │   ├── AuthService.cs          # ❌ SQL Injection · Secrets hardcodeados
+│       │   ├── ReportService.cs        # ❌ Path Traversal · SSRF · XXE · Insecure Deserialization
+│       │   └── CustomPatternDemoService.cs   # ❌ Secretos con formato interno
+│       ├── appsettings.json            # ❌ API keys hardcodeadas (Stripe, SendGrid, Azure)
+│       └── UsersApi.csproj             # ❌ Paquetes NuGet con CVEs conocidas
 ├── .github/
-│   ├── dependabot.yml          # Monitoreo de NuGet y GitHub Actions
+│   ├── dependabot.yml                  # Lab 02 — monitoreo de NuGet + GitHub Actions
+│   ├── secret_scanning.yml             # Lab 03 — paths excluidos de Secret Scanning
 │   └── workflows/
-│       ├── codeql.yml          # Code Scanning (2 jobs)
-│       └── dependency-review.yml  # Dependency Review en PRs
+│       ├── codeql.yml                  # Lab 04 — Code Scanning (2 jobs: autobuild + custom)
+│       └── dependency-review.yml       # Lab 05 — Dependency Review en PRs
 ├── docs/
-│   ├── 01-setup.md             # Prerequisitos y configuración
-│   ├── 02-dependabot.md        # Lab: Dependabot
-│   ├── 03-secret-scanning.md   # Lab: Secret Scanning + Push Protection
-│   ├── 04-code-scanning.md     # Lab: CodeQL
-│   ├── 05-dependency-review.md # Lab: Dependency Review
-│   ├── 06-ghas-at-scale.md     # Lab: GHAS a escala (org/enterprise)
-│   ├── 07-ghas-azure-devops.md # Lab: GHAS en Azure DevOps (GHAzDO)
-│   └── custom-patterns.md      # Guía: Custom Patterns
-├── SECURITY.md                 # Política de seguridad
-└── README.md                   # Este archivo
+│   ├── 01-setup.md                     # Lab 01: Prerequisitos y configuración
+│   ├── 02-dependabot.md                # Lab 02: Dependabot + Dependency Graph
+│   ├── 03-secret-scanning.md           # Lab 03: Secret Scanning + Push Protection
+│   ├── 04-code-scanning.md             # Lab 04: CodeQL — análisis estático
+│   ├── 05-dependency-review.md         # Lab 05: Dependency Review en PRs
+│   ├── 06-ghas-at-scale.md             # Lab 06: GHAS a escala (org/enterprise)
+│   ├── 07-ghas-azure-devops.md         # Lab 07: GHAS en Azure DevOps (GHAzDO)
+│   ├── custom-patterns.md              # Guía: Custom Patterns para secretos internos
+│   └── examples/
+│       └── release-notes.txt           # Ejemplo para demo de paths-ignore
+├── SECURITY.md                         # Política de seguridad del repositorio
+└── README.md                           # Este archivo
 ```
 
 ---
@@ -106,29 +186,33 @@ ghas/
 
 ## Prerequisitos
 
-| Requisito | Versión mínima |
-|---|---|
-| .NET SDK | 10.x |
-| Git | 2.x |
-| Cuenta GitHub | Con acceso al repo |
-| GHAS habilitado | En la organización o repo |
+Antes de empezar los labs, asegúrate de tener lo siguiente:
+
+| Requisito | Versión mínima | Notas |
+|---|---|---|
+| .NET SDK | 10.x | [Descargar](https://dotnet.microsoft.com/download) |
+| Git | 2.x | Para clonar y hacer push |
+| Cuenta GitHub | — | Con acceso a este repositorio |
+| GHAS habilitado | — | En la organización o en el repo (ver Lab 01) |
+
+> **¿Nuevo en GHAS?** No necesitas saber nada previo. El Lab 01 te guía paso a paso por toda la configuración inicial.
 
 ---
 
 ## Labs del Workshop
 
-| # | Lab | Descripción | Tiempo estimado |
-|---|---|---|---|
-| 01 | [Setup](./docs/01-setup.md) | Configurar GHAS en el repositorio | 15 min |
-| 02 | [Dependabot](./docs/02-dependabot.md) | Alertas de CVEs en dependencias | 20 min |
-| 03 | [Secret Scanning](./docs/03-secret-scanning.md) | Detectar y bloquear secretos expuestos | 25 min |
-| 04 | [Code Scanning](./docs/04-code-scanning.md) | Análisis de vulnerabilidades con CodeQL | 30 min |
-| 05 | [Dependency Review](./docs/05-dependency-review.md) | Bloquear CVEs en Pull Requests | 20 min |
-| 06 | [GHAS a escala](./docs/06-ghas-at-scale.md) | Security Configurations y Global Settings en la org | 20 min |
-| 07 | [GHAS en Azure DevOps](./docs/07-ghas-azure-devops.md) | GHAzDO: habilitar, pipelines, status checks | 25 min |
-| — | [Custom Patterns](./docs/custom-patterns.md) | Patrones regex para secretos internos | 20 min |
+> **Tiempo total estimado:** ~2h 45min — ideal para un workshop de día completo o para seguirlo a tu ritmo.
 
-**Tiempo total estimado:** ~2h 45min
+| # | Lab | ¿Qué aprenderás? | ⏱ |
+|---|---|---|---|
+| 01 | [⚙️ Setup](./docs/01-setup.md) | Habilitar GHAS en el repo, revisar workflows y configurar la base | 15 min |
+| 02 | [📦 Dependabot](./docs/02-dependabot.md) | Activar el Dependency Graph, recibir alertas de CVEs y configurar actualizaciones automáticas | 20 min |
+| 03 | [🔑 Secret Scanning](./docs/03-secret-scanning.md) | Detectar secretos ya expuestos, configurar Push Protection para bloquearlos antes del commit | 25 min |
+| 04 | [🔍 Code Scanning](./docs/04-code-scanning.md) | Ejecutar CodeQL, entender los query suites, revisar y cerrar alertas de SQL Injection, SSRF, XXE... | 30 min |
+| 05 | [🔒 Dependency Review](./docs/05-dependency-review.md) | Bloquear PRs que introduzcan dependencias con CVEs antes de llegar a main | 20 min |
+| 06 | [🏢 GHAS a escala](./docs/06-ghas-at-scale.md) | Security Configurations, Global Settings y Security Manager para cubrir toda una organización | 20 min |
+| 07 | [☁️ GHAS en Azure DevOps](./docs/07-ghas-azure-devops.md) | GHAzDO: Advanced Security en Azure Repos, integración con Azure Pipelines y automatización con la API REST | 25 min |
+| — | [✏️ Custom Patterns](./docs/custom-patterns.md) | Crear patrones regex para detectar secretos internos de tu empresa que GitHub no conoce de serie | 20 min |
 
 ---
 

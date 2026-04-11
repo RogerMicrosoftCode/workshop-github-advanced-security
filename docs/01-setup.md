@@ -1,10 +1,15 @@
 # Lab 01 — Setup del Entorno
 
-## Objetivos
+Bienvenido al workshop de **GitHub Advanced Security**. Antes de entrar en las vulnerabilidades y las herramientas de detección, necesitamos que el entorno esté listo y que entiendas qué hace la aplicación demo que usaremos para todo el workshop.
+
+Este lab es corto — en 15 minutos tendrás el proyecto corriendo localmente, habrás explorado la API y habrás habilitado GHAS en el repositorio.
+
+## ¿Qué vas a hacer en este lab?
 
 - Clonar el repositorio y ejecutar la aplicación localmente
-- Verificar los prerequisitos necesarios para el workshop
-- Entender la estructura del proyecto
+- Explorar los endpoints con vulnerabilidades intencionales que detectarás en labs posteriores
+- Revisar la estructura del proyecto y entender qué hace cada archivo
+- Habilitar GitHub Advanced Security en el repositorio
 
 ---
 
@@ -76,20 +81,27 @@ Una vez en Swagger, verás tres grupos de endpoints:
 
 ## Paso 4 — Revisar la estructura del proyecto
 
+Tómate un momento para entender cómo está organizado el repositorio. Esto te ayudará a navegar los labs con soltura:
+
 ```
 workshop-github-advanced-security/
 ├── .github/
-│   ├── dependabot.yml              # Lab 02 — Dependabot
+│   ├── dependabot.yml              # Lab 02 — Monitoreo de NuGet + GitHub Actions
+│   ├── secret_scanning.yml         # Lab 03 — Paths excluidos de Secret Scanning
 │   └── workflows/
-│       ├── codeql.yml              # Lab 04 — Code Scanning
-│       └── dependency-review.yml   # Lab 05 — Dependency Review
+│       ├── codeql.yml              # Lab 04 — Code Scanning (2 jobs)
+│       └── dependency-review.yml   # Lab 05 — Dependency Review en PRs
 ├── docs/
 │   ├── 01-setup.md                 # Este archivo
 │   ├── 02-dependabot.md
 │   ├── 03-secret-scanning.md
 │   ├── 04-code-scanning.md
 │   ├── 05-dependency-review.md
-│   └── custom-patterns.md
+│   ├── 06-ghas-at-scale.md
+│   ├── 07-ghas-azure-devops.md
+│   ├── custom-patterns.md
+│   └── examples/
+│       └── release-notes.txt       # Ejemplo para demo de paths-ignore
 ├── src/
 │   └── UsersApi/
 │       ├── Data/
@@ -97,12 +109,12 @@ workshop-github-advanced-security/
 │       ├── Models/
 │       │   └── User.cs             # Entidad User
 │       ├── Services/
-│       │   ├── AuthService.cs      # Demo: SQL Injection + Secrets
-│       │   ├── ReportService.cs    # Demo: Path Traversal, SSRF, XXE
-│       │   └── CustomPatternDemoService.cs  # Demo: Custom Patterns
+│       │   ├── AuthService.cs      # ❌ Demo: SQL Injection + Secrets
+│       │   ├── ReportService.cs    # ❌ Demo: Path Traversal, SSRF, XXE, Deserialización
+│       │   └── CustomPatternDemoService.cs  # ❌ Demo: Custom Patterns
 │       ├── Program.cs              # Punto de entrada + registro de endpoints
-│       ├── appsettings.json        # Demo: secretos hardcodeados en config
-│       └── UsersApi.csproj         # Demo: dependencias con CVEs conocidas
+│       ├── appsettings.json        # ❌ Demo: secretos hardcodeados en config
+│       └── UsersApi.csproj         # ❌ Demo: dependencias con CVEs conocidas
 ├── SECURITY.md                     # Política de seguridad del repositorio
 └── README.md                       # Índice del workshop
 ```
@@ -126,8 +138,17 @@ workshop-github-advanced-security/
 
 ## Siguiente paso
 
-➡️ [Lab 02 — Dependabot: gestión de dependencias vulnerables](./02-dependabot.md)
+¡Entorno listo! Ahora empieza la parte entretenida.
 
-🏢 ¿Quieres habilitar GHAS en múltiples repositorios a la vez? ➡️ [Lab 06 — GHAS a escala](./06-ghas-at-scale.md)
+Los labs 02 al 05 son independientes entre sí — puedes seguirlos en cualquier orden, aunque los recomendamos en secuencia:
 
-🔵 ¿Usas Azure DevOps en lugar de GitHub.com? ➡️ [Lab 07 — GHAS en Azure DevOps](./07-ghas-azure-devops.md)
+➡️ **Siguiente:** [Lab 02 — Dependabot: alertas de CVEs en dependencias](./02-dependabot.md)
+
+---
+
+📌 **También disponibles:**
+- [Lab 03 — Secret Scanning y Push Protection](./03-secret-scanning.md)
+- [Lab 04 — Code Scanning con CodeQL](./04-code-scanning.md)
+- [Lab 05 — Dependency Review en PRs](./05-dependency-review.md)
+- [Lab 06 — GHAS a escala (org/enterprise)](./06-ghas-at-scale.md)
+- [Lab 07 — GHAS en Azure DevOps](./07-ghas-azure-devops.md)

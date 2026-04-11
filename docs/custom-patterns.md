@@ -1,5 +1,18 @@
 # Secret Scanning — Custom Patterns
 
+GitHub Secret Scanning incluye ~200 patrones integrados para detectar secretos conocidos (GitHub PATs, AWS keys, Stripe keys...). Pero ¿y los secretos que son specíficos de **tu empresa**? Tokens de API internos, identificadores de cuentas de servicio, conexiones a sistemas propietarios — esos GitHub no los conoce.
+
+**Los Custom Patterns** te permiten definir tus propios patrones con expresiones regulares. En esta guía crearás patrones para los secretos de formato interno que tiene la API demo — exactamente el tipo de secretos que un equipo de seguridad real necesitaría añadir.
+
+## ¿Qué cubre esta guía?
+
+- Cómo escribir y publicar un Custom Pattern desde la UI de GitHub
+- Los patrones para los 4 tipos de secretos internos de la demo
+- Cómo usar el Dry Run para validar el patrón antes de activarlo
+- Cómo combinar Custom Patterns con Push Protection para bloqueo en el momento del commit
+
+---
+
 ## ¿Qué es un Custom Pattern?
 
 GitHub Secret Scanning incluye ~200 patrones integrados para detectar secretos conocidos (GitHub PATs, AWS keys, Stripe keys, etc.). Un **Custom Pattern** te permite definir **tus propios patrones** con expresiones regulares para detectar secretos internos de tu empresa que GitHub no conoce por defecto.
@@ -196,3 +209,11 @@ Con Push Protection activado:
 - El push es **bloqueado automáticamente** si contiene un secreto que coincida con el patrón
 - El desarrollador ve el error en su terminal y debe remover el secreto
 - El secreto **nunca llega al historial de Git** — es la forma más segura de prevención
+
+---
+
+## Siguiente paso
+
+Con los Custom Patterns configurados, tienes una cobertura completa de Secret Scanning adaptada a los secretos de tu empresa.
+
+🏠 Vuelve al índice: [README.md — Workshop GitHub Advanced Security](../README.md)

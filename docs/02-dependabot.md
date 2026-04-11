@@ -1,11 +1,15 @@
 # Lab 02 — Dependabot: Gestión de Dependencias Vulnerables
 
-## Objetivos
+Más del **70% de los proyectos de software usan componentes de terceros** con vulnerabilidades conocidas (Synk, 2023). Son CVEs públicos, visibles para cualquiera — incluyendo los atacantes. Dependabot es la herramienta de GitHub que monitoriza tus dependencias contra la base de datos de seguridad de GitHub (GitHub Advisory Database) y te avisa en cuanto aparece un CVE que te afecta.
 
-- Entender cómo Dependabot detecta CVEs en dependencias NuGet
-- Revisar las alertas generadas por los paquetes vulnerables del proyecto
-- Interpretar la configuración de `dependabot.yml`
-- Comprender el agrupamiento de PRs y la estrategia de versionado
+En este lab vas a ver Dependabot en acción con los paquetes NuGet vulnerables que ya tiene la API demo.
+
+## ¿Qué vas a aprender en este lab?
+
+- Cómo Dependabot detecta CVEs en dependencias NuGet
+- Cómo revisar e interpretar las alertas de seguridad
+- Cómo interpretar la configuración de `dependabot.yml`
+- Agrupamiento de PRs y estrategia de versionado
 
 ---
 
@@ -236,4 +240,6 @@ Esto actualiza automáticamente versiones como `actions/checkout@v3 → @v4`.
 
 ## Siguiente paso
 
-➡️ [Lab 03 — Secret Scanning: detección de secretos expuestos](./03-secret-scanning.md)
+¡Ahora ya sabes cómo gestionar las dependencias vulnerables con Dependabot! El siguiente lab cubre otra superficie de ataque frecuente: los secretos que los desarrolladores dejan expuestos en el código.
+
+➡️ **Siguiente:** [Lab 03 — Secret Scanning: detección de secretos expuestos](./03-secret-scanning.md)

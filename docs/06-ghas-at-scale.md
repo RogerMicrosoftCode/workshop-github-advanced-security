@@ -1,11 +1,15 @@
 # Lab 06 — GHAS a Escala: Configuración desde la Organización y Enterprise
 
-## Objetivos
+Ya tienes GHAS funcionando en un repositorio. Ahora viene la pregunta real: ¿cómo se hace esto en una organización con 50, 100 o 1000 repositorios?
 
-- Entender la diferencia entre **Security Configurations** y **Global Settings**
-- Crear y aplicar una Security Configuration personalizada a múltiples repositorios
-- Configurar Global Settings para Dependabot, Code Scanning y Secret Scanning
-- Conocer el rol de Security Manager y cómo usarlo para delegar la gestión
+Configurar repo por repo no escala. GitHub lo sabe y ofrece dos mecanismos complementarios para gestionar la seguridad a nivel de organización: **Security Configurations** (qué features están habilitadas en cada repo) y **Global Settings** (cómo se comportan esas features). En este lab los configurarás desde cero y entenderás cómo se aplican desde la org hasta cada repositorio.
+
+## ¿Qué vas a aprender en este lab?
+
+- La diferencia entre **Security Configurations** y **Global Settings**
+- Cómo crear y aplicar una Security Configuration personalizada a múltiples repositorios
+- Cómo configurar Global Settings para Dependabot, Code Scanning y Secret Scanning
+- El rol de Security Manager y cómo delegar la gestión de seguridad sin dar permisos de admin
 
 ---
 
@@ -286,8 +290,8 @@ Enterprise
 
 ## Siguiente paso
 
-🔵 ¿Usas Azure DevOps? ➡️ [Lab 07 — GHAS en Azure DevOps (GHAzDO)](./07-ghas-azure-devops.md)
+¡GHAS funcionando a escala en toda la organización! Si tu equipo trabaja con Azure DevOps además de GitHub, el siguiente lab es para ti.
 
-Vuelve al índice del workshop:
+🔵 **Azure DevOps:** ➡️ [Lab 07 — GHAS en Azure DevOps (GHAzDO)](./07-ghas-azure-devops.md)
 
-[README.md — Workshop: GitHub Advanced Security](../README.md)
+🏠 Vuelve al índice: [README.md — Workshop GitHub Advanced Security](../README.md)

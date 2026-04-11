@@ -1,8 +1,14 @@
 # Lab 04 — Code Scanning: Análisis Estático con CodeQL
 
-## Objetivos
+Dependabot cuida las dependencias. Secret Scanning cuida los secretos. Pero, ¿quién vigila el código que tú mismo escribes?
 
-- Entender cómo CodeQL analiza el flujo de datos para detectar vulnerabilidades
+**CodeQL** es el motor de análisis estático de GitHub. No busca patrones de texto ni firma de malware — modela el programa como una base de datos y ejecuta queries sobre el **flujo real de los datos**: desde el input del usuario hasta la query SQL, la ruta de archivo o la petición HTTP. Si el dato no pasa por una sanitización adecuada, CodeQL creará una alerta.
+
+En este lab ejecutarás CodeQL sobre la API demo y verás cómo detecta SQL Injection, SSRF, Path Traversal, XXE y deserialización insegura — las mismas vulnerabilidades que cualquier equipo puede introducir sin darse cuenta.
+
+## ¿Qué vas a aprender en este lab?
+
+- Cómo CodeQL analiza el flujo de datos para detectar vulnerabilidades
 - Identificar las vulnerabilidades del proyecto y sus patrones de código
 - Comparar las dos estrategias de build: `autobuild` vs custom build steps
 - Revisar las alertas generadas y aplicar las correcciones
@@ -518,6 +524,8 @@ Observa que el check de CodeQL **no aparece** en el PR porque la rama origen no 
 
 ## Siguiente paso
 
-➡️ [Lab 05 — Dependency Review: bloqueo de CVEs en Pull Requests](./05-dependency-review.md)
+¡Excelente! Has visto CodeQL detectar vulnerabilidades reales en el código. El siguiente lab cierra el círculo: Dependency Review, que bloquea los CVEs antes de que entren al repositorio vía Pull Request.
+
+➡️ **Siguiente:** [Lab 05 — Dependency Review: bloqueo de CVEs en Pull Requests](./05-dependency-review.md)
 
 🏢 ¿Quieres configurar GHAS en toda la organización? ➡️ [Lab 06 — GHAS a escala](./06-ghas-at-scale.md)

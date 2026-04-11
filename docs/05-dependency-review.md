@@ -1,6 +1,10 @@
 # Lab 05 — Dependency Review: Bloqueo de CVEs en Pull Requests
 
-## Objetivos
+Dependabot es reactivo: te avisa cuando ya tienes una dependencia vulnerable en el repositorio. Pero ¿y si puedes parar el problema **antes** de que llegue a `main`?
+
+Eso es exactamente lo que hace **Dependency Review**: evalúa las dependencias que introduce un Pull Request y **bloquea el merge** si alguna tiene un CVE conocido o una licencia incompatible. En este lab vas a activarlo, verlo en acción y explorar sus opciones de configuración.
+
+## ¿Qué vas a aprender en este lab?
 
 - Entender la diferencia entre Dependabot y Dependency Review
 - Configurar el workflow para detectar nuevas dependencias vulnerables
@@ -147,7 +151,7 @@ on:
 ### Crear el branch
 
 ```bash
-cd /Users/armandoblanco/proyectos/ghas
+cd workshop-github-advanced-security
 git checkout -b demo/vulnerable-package
 ```
 
@@ -309,4 +313,6 @@ git push origin --delete demo/vulnerable-package
 
 ## Siguiente paso
 
-➡️ [Lab 06 — GHAS a escala: Security Configurations y Global Settings](./06-ghas-at-scale.md)
+¡Bien hecho! Ya tienes el bloqueo preventivo funcionando en Pull Requests. Ahora viene el lab donde aprenderás a desplegar todo esto — Dependabot, Secret Scanning, Code Scanning y Dependency Review — en decenas de repositorios a la vez.
+
+➡️ **Siguiente:** [Lab 06 — GHAS a escala: Security Configurations y Global Settings](./06-ghas-at-scale.md)

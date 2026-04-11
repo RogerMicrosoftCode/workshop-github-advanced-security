@@ -1,12 +1,17 @@
 # Lab 07 — GHAS en Azure DevOps (GHAzDO)
 
-## Objetivos
+Tu organización usa Azure DevOps, no GitHub.com. ¿Means que te quedas sin GHAS? No. **GitHub Advanced Security for Azure DevOps (GHAzDO)** lleva exactamente las mismas capacidades — Secret Scanning, Dependency Scanning y Code Scanning con CodeQL — a los repositorios Git en Azure Repos.
 
-- Entender qué es GitHub Advanced Security for Azure DevOps (GHAzDO) y en qué se diferencia de GHAS en GitHub.com
-- Habilitar GHAS a nivel de repositorio, proyecto y organización en Azure DevOps
-- Configurar Secret Scanning, Dependency Scanning y Code Scanning con pipelines YAML
-- Configurar PR annotations y status checks para bloquear merges con vulnerabilidades
-- Entender el modelo de permisos y de billing por active committers
+En este lab configurarás GHAzDO desde cero: habilitación, pipelines YAML, anotaciones en PRs, status checks y, en la última parte, automatización a escala con la API REST y PowerShell.
+
+## ¿Qué vas a aprender en este lab?
+
+- Qué es GHAzDO y en qué se diferencia de GHAS en GitHub.com
+- Cómo habilitar GHAS a nivel de repositorio, proyecto y organización en Azure DevOps
+- Cómo configurar Secret Scanning, Dependency Scanning y Code Scanning con pipelines YAML
+- Cómo configurar PR annotations y status checks para bloquear merges con vulnerabilidades
+- El modelo de permisos y de billing por active committers
+- Automatización a escala con la API REST y PowerShell
 
 ---
 
@@ -426,6 +431,10 @@ El script anterior activa GHAS en todos los proyectos **existentes**. Para que l
 
 ## Siguiente paso
 
-Vuelve al índice del workshop:
+¡Completaste el workshop! Ahora tienes GHAS funcionando tanto en GitHub.com como en Azure DevOps.
 
-[README.md — Workshop: GitHub Advanced Security](../README.md)
+Si quieres ir más allá con la detección de secretos internos de tu empresa, te recomendamos la guía de Custom Patterns:
+
+➡️ [Custom Patterns — patrones regex para secretos internos](./custom-patterns.md)
+
+🏠 Vuelve al índice: [README.md — Workshop GitHub Advanced Security](../README.md)
