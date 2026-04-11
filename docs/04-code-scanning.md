@@ -96,7 +96,7 @@ queries: security-extended
 
 Para este workshop se usa `security-extended` para maximizar las alertas detectadas.
 
-> **📌 Concepto clave (GH-500):** `security-extended` incluye **todas las queries del suite `default` más queries adicionales que detectan issues de menor severidad**. Estas queries adicionales tienen ligeramente menor precisión, por lo que pueden generar más falsos positivos que `default`.
+> **📌 Concepto clave:** `security-extended` incluye **todas las queries del suite `default` más queries adicionales que detectan issues de menor severidad**. Estas queries adicionales tienen ligeramente menor precisión, por lo que pueden generar más falsos positivos que `default`.
 >
 > En el examen, las otras opciones de respuesta suelen ser **rutas a language packs** (ej. `codeql/csharp-queries`) — los language packs contienen las queries individuales, pero no son query suites en sí mismos. Solo `security-extended` (y `default`) son query suites built-in con nombre corto reconocido por GHAS.
 >
@@ -107,6 +107,31 @@ Para este workshop se usa `security-extended` para maximizar las alertas detecta
 > | `security-extended` | `default` + queries de menor severidad | Media, más FP | Más visibilidad, code hygiene, workshops |
 >
 > Fuente: [CodeQL query suites — GitHub Docs](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-query-suites)
+
+**Ejemplo en el workflow — cambiar entre suites:**
+
+```yaml
+# Opción A: suite default (alta precisión, menos alertas)
+- uses: github/codeql-action/init@v3
+  with:
+    languages: csharp
+    queries: default
+
+# Opción B: security-extended (más cobertura, incluye lower-severity)
+- uses: github/codeql-action/init@v3
+  with:
+    languages: csharp
+    queries: security-extended
+
+# Opción C: language pack (NO es una query suite — es una colección de queries)
+# Esto NO es equivalente a usar una suite built-in
+- uses: github/codeql-action/init@v3
+  with:
+    languages: csharp
+    packs: codeql/csharp-queries  # pack, no suite
+```
+
+> ⚠️ `codeql/csharp-queries` es un **language pack** — contiene queries individuales pero no es una query suite. En preguntas del examen, esta opción es un distractor incorrecto cuando la pregunta pide la suite que detecta issues de menor severidad.
 
 ### Extensiones de archivo en CodeQL
 
