@@ -58,13 +58,17 @@ Esta tabla consolida todos los permisos de seguridad relevantes en los cinco niv
 | Ver alertas en un PR | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Ver la lista completa de alertas | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Descartar / cerrar alertas | ❌ | ❌ | ✅ | ✅ | ✅ |
+| 📧 Email al detectar alerta en default branch | ❌ | ❌ | ❌ | ❌ | ❌ ² |
 | **Secret Scanning** | | | | | |
 | Ver alertas en la lista | ❌ | ❌ | ✅ ¹ | ✅ ¹ | ✅ |
 | Descartar alertas | ❌ | ❌ | ✅ | ✅ | ✅ |
+| 📧 Email al detectar secreto activo | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 📧 Email al producirse un bypass de Push Protection | ❌ | ❌ | ❌ | ❌ | ✅ ³ |
 | **Dependabot** | | | | | |
-| Recibir notificaciones de Dependabot | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Ver lista de alertas Dependabot | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Descartar alertas Dependabot | ❌ | ❌ | ✅ | ✅ | ✅ |
+| 📧 Email por CVE Critical / High (nuevo) | ❌ | ❌ | ✅ | ✅ | ✅ |
+| 📧 Email por CVE Medium / Low | ❌ | ❌ | ❌ | ❌ | ❌ ⁴ |
 | **Push Protection** | | | | | |
 | Hacer bypass de push protection (sin delegated bypass) | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Aprobar o rechazar solicitudes de bypass (con delegated bypass) | Solo si es designado | Solo si es designado | Solo si es designado | Solo si es designado | ✅ |
@@ -75,6 +79,12 @@ Esta tabla consolida todos los permisos de seguridad relevantes en los cinco niv
 | Ampliar acceso a alertas a otras personas o equipos | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 > ¹ **Excepción de Secret Scanning para Write y Maintain:** Los usuarios con rol Write o Maintain pueden ver alertas de secret scanning, pero **solo para sus propios commits**. No tienen acceso a la vista de lista completa con todas las alertas del repositorio. El acceso completo a la lista lo tienen los Admin, los Org Owners y los Security Managers.
+>
+> ² **Code Scanning no envía email por alertas individuales.** Las alertas aparecen como anotaciones en PRs (visibles para todos) y en la pestaña Security (Write+), pero no generan correo automático. Los Admins pueden configurar webhooks o integraciones para recibir notificaciones externas.
+>
+> ³ **Email de bypass de Push Protection** se envía también a los Org Owners y Security Managers que estén en modo *watching* del repositorio, independientemente de su rol en el repo.
+>
+> ⁴ **Dependabot solo envía email automático para severidad Critical o High.** Las alertas Medium y Low se muestran en la pestaña Security pero no generan correo por defecto. Cada usuario puede ajustar este umbral en `Settings → Notifications → Dependabot alerts`.
 
 ---
 
