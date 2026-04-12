@@ -25,6 +25,7 @@ Usamos una **API .NET 10 intencionalmente rota** con SQL Injection, Path Travers
 | **Dependency Review** | CVEs en dependencias nuevas: bloquea el PR antes de mergear | [Lab 05](./docs/05-dependency-review.md) |
 | **GHAS a escala** | Desplegar todas estas herramientas en decenas de repos a la vez | [Lab 06](./docs/06-ghas-at-scale.md) |
 | **GHAS en Azure DevOps** | GHAzDO: lo mismo pero en Azure Repos y Azure Pipelines | [Lab 07](./docs/07-ghas-azure-devops.md) |
+| **Roles y Permisos** | Quién puede ver alertas, descartarlas y configurar GHAS según su rol | [Guía](./docs/08-roles-y-permisos.md) |
 | **Custom Patterns** | Detectar secretos internos de tu empresa que GitHub no conoce | [Guía](./docs/custom-patterns.md) |
 
 ---
@@ -131,6 +132,7 @@ workshop-github-advanced-security/
 │   ├── 05-dependency-review.md         # Lab 05: Dependency Review en PRs
 │   ├── 06-ghas-at-scale.md             # Lab 06: GHAS a escala (org/enterprise)
 │   ├── 07-ghas-azure-devops.md         # Lab 07: GHAS en Azure DevOps (GHAzDO)
+│   ├── 08-roles-y-permisos.md          # Guía: Roles y permisos en GHAS
 │   ├── custom-patterns.md              # Guía: Custom Patterns para secretos internos
 │   └── examples/
 │       └── release-notes.txt           # Ejemplo para demo de paths-ignore
@@ -212,6 +214,7 @@ Antes de empezar los labs, asegúrate de tener lo siguiente:
 | 05 | [🔒 Dependency Review](./docs/05-dependency-review.md) | Bloquear PRs que introduzcan dependencias con CVEs antes de llegar a main | 20 min |
 | 06 | [🏢 GHAS a escala](./docs/06-ghas-at-scale.md) | Security Configurations, Global Settings y Security Manager para cubrir toda una organización | 20 min |
 | 07 | [☁️ GHAS en Azure DevOps](./docs/07-ghas-azure-devops.md) | GHAzDO: Advanced Security en Azure Repos, integración con Azure Pipelines y automatización con la API REST | 25 min |
+| — | [🔐 Roles y Permisos](./docs/08-roles-y-permisos.md) | Matrices de permisos: quién puede ver, descartar y configurar cada servicio de GHAS según su rol | 15 min |
 | — | [✏️ Custom Patterns](./docs/custom-patterns.md) | Crear patrones regex para detectar secretos internos de tu empresa que GitHub no conoce de serie | 20 min |
 
 ---

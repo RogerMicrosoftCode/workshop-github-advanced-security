@@ -437,6 +437,8 @@ El script anterior activa GHAS en todos los proyectos **existentes**. Para que l
 
 Si quieres ir más allá con la detección de secretos internos de tu empresa, te recomendamos la guía de Custom Patterns:
 
+➡️ [Roles y Permisos — quién puede ver y gestionar alertas de GHAS](./08-roles-y-permisos.md)
+
 ➡️ [Custom Patterns — patrones regex para secretos internos](./custom-patterns.md)
 
 🏠 Vuelve al índice: [README.md — Workshop GitHub Advanced Security](../README.md)
